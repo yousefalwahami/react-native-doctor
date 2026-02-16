@@ -1,5 +1,5 @@
-import Image from "next/image";
+import Terminal from "@/components/terminal";
 
-export default function Home() {
-  return <div>hi</div>;
-}
+const Home = () => <Terminal />;
+
+export default Home;

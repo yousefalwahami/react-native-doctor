@@ -31,9 +31,7 @@ const calculateScore = (diagnostics: DiagnosticInput[]): number => {
     }
   }
 
-  const penalty =
-    errorRules.size * ERROR_RULE_PENALTY +
-    warningRules.size * WARNING_RULE_PENALTY;
+  const penalty = errorRules.size * ERROR_RULE_PENALTY + warningRules.size * WARNING_RULE_PENALTY;
 
   return Math.max(0, Math.round(PERFECT_SCORE - penalty));
 };
@@ -54,8 +52,7 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-export const OPTIONS = (): Response =>
-  new Response(null, { status: 204, headers: CORS_HEADERS });
+export const OPTIONS = (): Response => new Response(null, { status: 204, headers: CORS_HEADERS });
 
 export const POST = async (request: Request): Promise<Response> => {
   const body = await request.json().catch(() => null);
@@ -67,21 +64,19 @@ export const POST = async (request: Request): Promise<Response> => {
     );
   }
 
-  const isValidPayload = body.diagnostics.every(
-    (entry: unknown) => isValidDiagnostic(entry),
-  );
+  const isValidPayload = body.diagnostics.every((entry: unknown) => isValidDiagnostic(entry));
 
   if (!isValidPayload) {
     return Response.json(
-      { error: "Each diagnostic must have 'plugin' (string), 'rule' (string), and 'severity' ('error' | 'warning')" },
+      {
+        error:
+          "Each diagnostic must have 'plugin' (string), 'rule' (string), and 'severity' ('error' | 'warning')",
+      },
       { status: 400, headers: CORS_HEADERS },
     );
   }
 
   const score = calculateScore(body.diagnostics);
 
-  return Response.json(
-    { score, label: getScoreLabel(score) },
-    { headers: CORS_HEADERS },
-  );
+  return Response.json({ score, label: getScoreLabel(score) }, { headers: CORS_HEADERS });
 };
