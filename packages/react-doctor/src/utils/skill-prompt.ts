@@ -1,0 +1,77 @@
+import { execSync } from "node:child_process";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
+import { highlighter } from "./highlighter.js";
+import { logger } from "./logger.js";
+import { prompts } from "./prompts.js";
+
+const CONFIG_DIRECTORY = join(homedir(), ".react-doctor");
+const CONFIG_FILE = join(CONFIG_DIRECTORY, "config.json");
+const SKILL_REPO = "aidenybai/react-doctor";
+
+interface UserConfig {
+  skillPromptDismissed?: boolean;
+}
+
+const readConfig = (): UserConfig => {
+  try {
+    if (!existsSync(CONFIG_FILE)) return {};
+    return JSON.parse(readFileSync(CONFIG_FILE, "utf-8"));
+  } catch {
+    return {};
+  }
+};
+
+const writeConfig = (config: UserConfig): void => {
+  try {
+    if (!existsSync(CONFIG_DIRECTORY)) {
+      mkdirSync(CONFIG_DIRECTORY, { recursive: true });
+    }
+    writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
+  } catch {}
+};
+
+const installSkill = (): boolean => {
+  try {
+    execSync(`npx -y skills add ${SKILL_REPO}`, { stdio: "inherit" });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export const maybePromptSkillInstall = async (shouldSkipPrompts: boolean): Promise<void> => {
+  const config = readConfig();
+  if (config.skillPromptDismissed) return;
+  if (shouldSkipPrompts) return;
+
+  logger.break();
+  logger.log(
+    `${highlighter.info("💡")} Install the ${highlighter.info("react-doctor")} skill for your coding agent?`,
+  );
+  logger.dim("   Adds React best practices to Cursor, Claude Code, Copilot, and more.");
+  logger.break();
+
+  const { shouldInstall } = await prompts({
+    type: "confirm",
+    name: "shouldInstall",
+    message: "Install skill?",
+    initial: true,
+  });
+
+  if (shouldInstall) {
+    logger.break();
+    const didInstall = installSkill();
+    if (didInstall) {
+      logger.break();
+      logger.success("Skill installed!");
+    } else {
+      logger.break();
+      logger.dim("Skill install failed. You can install manually:");
+      logger.dim(`  npx skills add ${SKILL_REPO}`);
+    }
+  }
+
+  writeConfig({ ...config, skillPromptDismissed: true });
+};

@@ -83,9 +83,19 @@ Options:
   -h, --help        display help for command
 ```
 
+## Install as a skill
+
+Add React Doctor's rules as a [skill](https://skills.sh) for your coding agent:
+
+```bash
+npx skills add aidenybai/react-doctor
+```
+
+This gives agents like Cursor, Claude Code, Copilot, and others access to all 47+ React best practice rules. The CLI will also prompt to install the skill on first run.
+
 ## Use with coding agents
 
-React Doctor is designed to work with coding agents like Cursor, Claude Code, Codex, and Copilot. Run it in your project, then paste the output into your agent to get fixes.
+Run react-doctor with `--verbose`, then paste the output into your agent to get fixes:
 
 ```bash
 npx -y react-doctor@latest . --verbose

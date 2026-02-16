@@ -7,6 +7,7 @@ import { highlighter } from "./utils/highlighter.js";
 import { logger } from "./utils/logger.js";
 import { scan } from "./scan.js";
 import { selectProjects } from "./utils/select-projects.js";
+import { maybePromptSkillInstall } from "./utils/skill-prompt.js";
 
 const VERSION = process.env.VERSION ?? "0.0.0";
 
@@ -77,6 +78,10 @@ const program = new Command()
 
       if (flags.fix) {
         openAmiToFix(resolvedDirectory);
+      }
+
+      if (!isScoreOnly) {
+        await maybePromptSkillInstall(shouldSkipPrompts);
       }
     } catch (error) {
       handleError(error);
