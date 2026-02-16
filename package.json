@@ -1,6 +1,7 @@
 {
   "name": "react-doctor",
   "private": true,
+  "packageManager": "pnpm@10.29.1",
   "scripts": {
     "dev": "pnpm --filter react-doctor run dev",
     "build": "pnpm --filter react-doctor run build",
