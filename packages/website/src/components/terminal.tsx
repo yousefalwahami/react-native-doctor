@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Copy, Check, ChevronRight } from "lucide-react";
+import { Copy, Check, ChevronRight, RotateCcw } from "lucide-react";
 
 const COPIED_RESET_DELAY_MS = 2000;
 const INITIAL_DELAY_MS = 500;
@@ -438,6 +438,23 @@ const Terminal = () => {
             </a>
           </div>
         </FadeIn>
+      )}
+
+      {state.showSummary && (
+        <div className="mt-8">
+          <button
+            onClick={() => {
+              try {
+                localStorage.removeItem(ANIMATION_COMPLETED_KEY);
+              } catch {}
+              location.reload();
+            }}
+            className="inline-flex items-center gap-1.5 text-xs text-neutral-600 transition-colors hover:text-neutral-400"
+          >
+            <RotateCcw size={12} />
+            Restart demo
+          </button>
+        </div>
       )}
     </div>
   );
