@@ -159,21 +159,23 @@ const printScoreGauge = (score: number, label: string): void => {
   logger.break();
 };
 
-const getDoctorFace = (score: number): string => {
-  if (score >= SCORE_GOOD_THRESHOLD) return "◠‿◠";
-  if (score >= SCORE_OK_THRESHOLD) return "•_•";
-  return "x_x";
+const getDoctorFace = (score: number): string[] => {
+  if (score >= SCORE_GOOD_THRESHOLD) return ["◠ ◠", " ▽ "];
+  if (score >= SCORE_OK_THRESHOLD) return ["• •", " ─ "];
+  return ["x x", " ▽ "];
 };
 
 const printBranding = (score?: number): void => {
-  logger.break();
   if (score !== undefined) {
-    logger.log(
-      `  ${colorizeByScore(getDoctorFace(score), score)}  ${highlighter.dim("React Doctor (www.react.doctor)")}`,
-    );
-  } else {
-    logger.dim("  React Doctor (www.react.doctor)");
+    const [eyes, mouth] = getDoctorFace(score);
+    const colorize = (text: string) => colorizeByScore(text, score);
+    logger.log(colorize("  ┌─────┐"));
+    logger.log(colorize(`  │ ${eyes} │`));
+    logger.log(colorize(`  │ ${mouth} │`));
+    logger.log(colorize("  └─────┘"));
   }
+  logger.dim("  React Doctor (www.react.doctor)");
+  logger.break();
 };
 
 const printSummary = (
@@ -188,6 +190,8 @@ const printSummary = (
 
   logger.log("─".repeat(SEPARATOR_LENGTH_CHARS));
   logger.break();
+
+  printBranding(scoreResult?.score);
 
   if (scoreResult) {
     printScoreGauge(scoreResult.score, scoreResult.label);
@@ -209,8 +213,6 @@ const printSummary = (
   parts.push(highlighter.dim(`in ${elapsed}`));
 
   logger.log(`  ${parts.join("  ")}`);
-
-  printBranding(scoreResult?.score);
 
   try {
     const diagnosticsDirectory = writeDiagnosticsDirectory(diagnostics);
@@ -309,8 +311,8 @@ export const scan = async (directory: string, options: ScanOptions): Promise<voi
     logger.success("No issues found!");
     logger.break();
     if (scoreResult) {
-      printScoreGauge(scoreResult.score, scoreResult.label);
       printBranding(scoreResult.score);
+      printScoreGauge(scoreResult.score, scoreResult.label);
     } else {
       logger.dim(`  ${OFFLINE_MESSAGE}`);
     }
