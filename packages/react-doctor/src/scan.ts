@@ -17,19 +17,60 @@ const groupDiagnosticsByCategory = (diagnostics: Diagnostic[]): Map<string, Diag
   return groups;
 };
 
-const printCategorySection = (category: string, diagnostics: Diagnostic[]): void => {
-  const separatorFill = "─".repeat(SEPARATOR_LENGTH - category.length - 6);
+const groupDiagnosticsByRule = (
+  diagnostics: Diagnostic[],
+): Map<string, Diagnostic[]> => {
+  const groups = new Map<string, Diagnostic[]>();
+
+  for (const diagnostic of diagnostics) {
+    const ruleKey = `${diagnostic.plugin}/${diagnostic.rule}`;
+    const existing = groups.get(ruleKey) ?? [];
+    existing.push(diagnostic);
+    groups.set(ruleKey, existing);
+  }
+
+  return groups;
+};
+
+const printCategorySection = (
+  category: string,
+  diagnostics: Diagnostic[],
+): void => {
+  const separatorFill = "─".repeat(
+    SEPARATOR_LENGTH - category.length - 6,
+  );
   logger.log(`──── ${category} ${separatorFill}`);
   logger.break();
 
-  for (const diagnostic of diagnostics) {
-    const icon = diagnostic.severity === "error" ? highlighter.error("✗") : highlighter.warn("⚠");
-    logger.log(`  ${icon} ${diagnostic.message}`);
-    if (diagnostic.help) {
-      logger.dim(`    ${diagnostic.help}`);
+  const ruleGroups = groupDiagnosticsByRule(diagnostics);
+
+  for (const [ruleKey, ruleDiagnostics] of ruleGroups) {
+    const firstDiagnostic = ruleDiagnostics[0];
+    const icon =
+      firstDiagnostic.severity === "error"
+        ? highlighter.error("✗")
+        : highlighter.warn("⚠");
+    const count = ruleDiagnostics.length;
+    const countLabel = count > 1 ? ` (${count})` : "";
+
+    logger.log(`  ${icon} ${firstDiagnostic.message}${countLabel}`);
+    if (firstDiagnostic.help) {
+      logger.dim(`    ${firstDiagnostic.help}`);
     }
-    logger.dim(`    ${diagnostic.filePath}:${diagnostic.line}:${diagnostic.column}`);
-    logger.dim(`    Rule: ${diagnostic.plugin}/${diagnostic.rule}`);
+    logger.dim(`    Rule: ${ruleKey}`);
+
+    const fileOccurrences = new Map<string, number>();
+    for (const diagnostic of ruleDiagnostics) {
+      const currentCount = fileOccurrences.get(diagnostic.filePath) ?? 0;
+      fileOccurrences.set(diagnostic.filePath, currentCount + 1);
+    }
+
+    for (const [filePath, occurrenceCount] of fileOccurrences) {
+      const fileCountLabel =
+        occurrenceCount > 1 ? ` (${occurrenceCount}x)` : "";
+      logger.dim(`    ${filePath}${fileCountLabel}`);
+    }
+
     logger.break();
   }
 };

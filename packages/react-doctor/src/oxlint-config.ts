@@ -1,12 +1,32 @@
 import type { LintPluginOptionsSchema } from "./types.js";
 
+interface OxlintCategories {
+  correctness?: "off" | "warn" | "error";
+  suspicious?: "off" | "warn" | "error";
+  pedantic?: "off" | "warn" | "error";
+  perf?: "off" | "warn" | "error";
+  restriction?: "off" | "warn" | "error";
+  style?: "off" | "warn" | "error";
+  nursery?: "off" | "warn" | "error";
+}
+
 interface OxlintConfig {
+  categories: OxlintCategories;
   plugins: LintPluginOptionsSchema[];
   rules: Record<string, "error" | "warn" | "off">;
 }
 
 export const OXLINT_CONFIG: OxlintConfig = {
-  plugins: ["react", "jsx-a11y", "react-perf", "import", "typescript"],
+  categories: {
+    correctness: "off",
+    suspicious: "off",
+    pedantic: "off",
+    perf: "off",
+    restriction: "off",
+    style: "off",
+    nursery: "off",
+  },
+  plugins: ["react", "jsx-a11y", "react-perf"],
   rules: {
     "react/rules-of-hooks": "error",
     "react/no-direct-mutation-state": "error",
@@ -42,16 +62,5 @@ export const OXLINT_CONFIG: OxlintConfig = {
     "react-perf/jsx-no-new-array-as-prop": "warn",
     "react-perf/jsx-no-new-function-as-prop": "warn",
     "react-perf/jsx-no-jsx-as-prop": "warn",
-
-    "import/no-cycle": "error",
-    "import/no-self-import": "error",
-    "import/no-duplicates": "warn",
-    "import/no-named-default": "warn",
-
-    "typescript/consistent-type-imports": "warn",
-    "typescript/no-explicit-any": "warn",
-    "typescript/no-non-null-assertion": "warn",
-    "typescript/prefer-ts-expect-error": "warn",
-    "typescript/no-unnecessary-type-assertion": "warn",
   },
 };
