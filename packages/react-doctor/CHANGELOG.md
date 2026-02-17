@@ -1,5 +1,11 @@
 # react-doctor
 
+## 0.0.11
+
+### Patch Changes
+
+- fix: enviroment vars
+
 ## 0.0.10
 
 ### Patch Changes

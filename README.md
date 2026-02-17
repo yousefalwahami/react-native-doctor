@@ -28,7 +28,7 @@ npx -y react-doctor@latest . --verbose
 Add React Doctor's rules as a [skill](https://skills.sh) for your coding agent:
 
 ```bash
-npx skills add aidenybai/react-doctor
+npx skills add millionco/react-doctor
 ```
 
 This gives agents like Cursor, Claude Code, Copilot, and others access to all 47+ React best practice rules. The CLI will also prompt to install the skill on first run.
@@ -72,7 +72,7 @@ Options:
 Want to contribute? Check out the codebase and submit a PR.
 
 ```bash
-git clone https://github.com/aidenybai/react-doctor
+git clone https://github.com/millionco/react-doctor
 cd react-doctor
 pnpm install
 pnpm -r run build

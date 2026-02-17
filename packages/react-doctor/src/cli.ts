@@ -115,7 +115,7 @@ const program = new Command()
     "after",
     `
 ${highlighter.dim("Learn more:")}
-  ${highlighter.info("https://github.com/aidenybai/react-doctor")}
+  ${highlighter.info("https://github.com/millionco/react-doctor")}
 `,
   );
 

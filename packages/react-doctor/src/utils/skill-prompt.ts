@@ -8,7 +8,7 @@ import { prompts } from "./prompts.js";
 
 const CONFIG_DIRECTORY = join(homedir(), ".react-doctor");
 const CONFIG_FILE = join(CONFIG_DIRECTORY, "config.json");
-const SKILL_REPO = "aidenybai/react-doctor";
+const SKILL_REPO = "millionco/react-doctor";
 
 interface UserConfig {
   skillPromptDismissed?: boolean;
