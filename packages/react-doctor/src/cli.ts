@@ -7,6 +7,7 @@ import { highlighter } from "./utils/highlighter.js";
 import { logger } from "./utils/logger.js";
 import { scan } from "./scan.js";
 import { selectProjects } from "./utils/select-projects.js";
+import { prompts } from "./utils/prompts.js";
 import { maybePromptSkillInstall } from "./utils/skill-prompt.js";
 
 const VERSION = process.env.VERSION ?? "0.0.0";
@@ -82,6 +83,9 @@ const program = new Command()
 
       if (!isScoreOnly) {
         await maybePromptSkillInstall(shouldSkipPrompts);
+        if (!shouldSkipPrompts && !flags.fix) {
+          await maybePromptAmiFix(resolvedDirectory);
+        }
       }
     } catch (error) {
       handleError(error);
@@ -98,7 +102,6 @@ ${highlighter.dim("Learn more:")}
 const AMI_INSTALL_URL = "https://ami.dev/install.sh";
 const AMI_FIX_PROMPT =
   "Run npx -y react-doctor@latest . --verbose, read every diagnostic, then fix all issues one by one. After fixing, re-run react-doctor to verify the score improved.";
-const OPEN_PROJECT_DELAY_S = 2;
 
 const isAmiInstalled = (): boolean => {
   try {
@@ -132,20 +135,34 @@ const openAmiToFix = (directory: string): void => {
 
   const encodedDirectory = encodeURIComponent(resolvedDirectory);
   const encodedPrompt = encodeURIComponent(AMI_FIX_PROMPT);
-  const openProjectDeeplink = `ami://open-project?cwd=${encodedDirectory}`;
-  const newChatDeeplink = `ami://new-chat?prompt=${encodedPrompt}&mode=agent&send=true`;
+  const deeplink = `ami://open-project?cwd=${encodedDirectory}&prompt=${encodedPrompt}&mode=agent`;
 
   try {
-    execSync(
-      `open "${openProjectDeeplink}" && sleep ${OPEN_PROJECT_DELAY_S} && open "${newChatDeeplink}"`,
-      { stdio: "ignore" },
-    );
+    execSync(`open "${deeplink}"`, { stdio: "ignore" });
     logger.success("Opened Ami with react-doctor fix prompt.");
   } catch {
     logger.break();
-    logger.dim("Could not open Ami automatically. Open these URLs manually:");
-    logger.info(openProjectDeeplink);
-    logger.info(newChatDeeplink);
+    logger.dim("Could not open Ami automatically. Open this URL manually:");
+    logger.info(deeplink);
+  }
+};
+
+const maybePromptAmiFix = async (directory: string): Promise<void> => {
+  logger.break();
+  logger.log(`Fix these issues with ${highlighter.info("Ami")}?`);
+  logger.dim("   Ami is a coding agent built to understand your codebase and fix issues");
+  logger.dim(`   automatically. Learn more at ${highlighter.info("https://ami.dev")}`);
+  logger.break();
+
+  const { shouldFix } = await prompts({
+    type: "confirm",
+    name: "shouldFix",
+    message: "Open Ami to fix?",
+    initial: true,
+  });
+
+  if (shouldFix) {
+    openAmiToFix(directory);
   }
 };
 
