@@ -279,9 +279,10 @@ const printSummary = (
     summaryLinePartsPlain.push(warningText);
     summaryLineParts.push(highlighter.warn(warningText));
   }
-  const fileCountText = totalSourceFileCount > 0
-    ? `across ${affectedFileCount}/${totalSourceFileCount} files`
-    : `across ${affectedFileCount} file${affectedFileCount === 1 ? "" : "s"}`;
+  const fileCountText =
+    totalSourceFileCount > 0
+      ? `across ${affectedFileCount}/${totalSourceFileCount} files`
+      : `across ${affectedFileCount} file${affectedFileCount === 1 ? "" : "s"}`;
   const elapsedTimeText = `in ${elapsed}`;
 
   summaryLinePartsPlain.push(fileCountText);
@@ -442,5 +443,11 @@ export const scan = async (directory: string, options: ScanOptions): Promise<voi
 
   printDiagnostics(diagnostics, options.verbose);
 
-  printSummary(diagnostics, elapsedMilliseconds, scoreResult, projectInfo.projectName, projectInfo.sourceFileCount);
+  printSummary(
+    diagnostics,
+    elapsedMilliseconds,
+    scoreResult,
+    projectInfo.projectName,
+    projectInfo.sourceFileCount,
+  );
 };
