@@ -23,23 +23,6 @@ Use `--verbose` to see affected files and line numbers:
 npx -y react-doctor@latest . --verbose
 ```
 
-## What it checks
-
-React Doctor runs **47+ rules** across these categories:
-
-| Category            | Examples                                                                        |
-| ------------------- | ------------------------------------------------------------------------------- |
-| **State & Effects** | Derived state in useEffect, cascading setState, missing cleanup                 |
-| **Architecture**    | Nested component definitions, giant components, inline render functions         |
-| **Performance**     | Layout property animations, transition-all, large animated blur                 |
-| **Correctness**     | Array index as key, conditional rendering bugs                                  |
-| **Next.js**         | Missing metadata, client-side fetching for server data, async client components |
-| **Bundle Size**     | Barrel imports, full lodash import, undeferred third-party scripts              |
-| **Security**        | Hardcoded secrets in client code, eval usage                                    |
-| **Server**          | Missing auth in server actions, blocking operations without after()             |
-| **Accessibility**   | Missing prefers-reduced-motion checks                                           |
-| **Dead Code**       | Unused files, exports, types, and duplicate exports                             |
-
 ## Example output
 
 ```
