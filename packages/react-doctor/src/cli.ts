@@ -139,15 +139,11 @@ const isAmiInstalled = (): boolean => {
   }
 
   if (process.platform === "win32") {
-    const localAppData = process.env.LOCALAPPDATA;
-    if (localAppData && existsSync(path.join(localAppData, "Programs", "Ami", "Ami.exe"))) {
-      return true;
-    }
-    const programFiles = process.env.PROGRAMFILES;
-    if (programFiles && existsSync(path.join(programFiles, "Ami", "Ami.exe"))) {
-      return true;
-    }
-    return false;
+    const { LOCALAPPDATA, PROGRAMFILES } = process.env;
+    return (
+      Boolean(LOCALAPPDATA && existsSync(path.join(LOCALAPPDATA, "Programs", "Ami", "Ami.exe"))) ||
+      Boolean(PROGRAMFILES && existsSync(path.join(PROGRAMFILES, "Ami", "Ami.exe")))
+    );
   }
 
   try {
@@ -185,14 +181,14 @@ const openUrl = (url: string): void => {
 const buildDeeplink = (directory: string): string => {
   const encodedDirectory = encodeURIComponent(path.resolve(directory));
   const encodedPrompt = encodeURIComponent(DEEPLINK_FIX_PROMPT);
-  return `ami://open-project?cwd=${encodedDirectory}&prompt=${encodedPrompt}&mode=agent`;
+  return `ami://open-project?cwd=${encodedDirectory}&prompt=${encodedPrompt}&mode=agent&autoSubmit=true`;
 };
 
 const openAmiToFix = (directory: string): void => {
-  const isAlreadyInstalled = isAmiInstalled();
+  const isInstalled = isAmiInstalled();
   const deeplink = buildDeeplink(directory);
 
-  if (!isAlreadyInstalled) {
+  if (!isInstalled) {
     if (process.platform === "darwin") {
       installAmi();
       logger.success("Ami was installed and opened.");
