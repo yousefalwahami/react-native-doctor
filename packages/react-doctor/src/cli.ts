@@ -9,6 +9,7 @@ import { scan } from "./scan.js";
 import { selectProjects } from "./utils/select-projects.js";
 import { prompts } from "./utils/prompts.js";
 import { maybePromptSkillInstall } from "./utils/skill-prompt.js";
+import { maybeInstallGlobally } from "./utils/global-install.js";
 
 const VERSION = process.env.VERSION ?? "0.0.0";
 
@@ -193,6 +194,7 @@ program.addCommand(fixCommand);
 program.addCommand(installAmiCommand);
 
 const main = async () => {
+  maybeInstallGlobally();
   await program.parseAsync();
 };
 
