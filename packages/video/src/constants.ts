@@ -104,6 +104,8 @@ export const TOTAL_ERROR_COUNT = 22;
 export const AFFECTED_FILE_COUNT = 18;
 export const ELAPSED_TIME = "2.1s";
 export const SCORE_BAR_WIDTH = 30;
+export const SCORE_GOOD_THRESHOLD = 75;
+export const SCORE_OK_THRESHOLD = 50;
 
 export const DIAGNOSTICS = [
   {

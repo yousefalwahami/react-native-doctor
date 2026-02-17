@@ -3,6 +3,7 @@ import {
   EFFECT_HOOK_NAMES,
   HOOKS_WITH_DEPS,
   RELATED_USE_STATE_THRESHOLD,
+  TRIVIAL_INITIALIZER_NAMES,
 } from "../constants.js";
 import {
   containsFetchCall,
@@ -132,14 +133,14 @@ export const noEffectEventHandler: Rule = {
       );
 
       const statements = getCallbackStatements(callback);
-      const hasConditionalOnDependency = statements.some(
-        (statement: EsTreeNode) =>
-          statement.type === "IfStatement" &&
-          statement.test?.type === "Identifier" &&
-          dependencyNames.has(statement.test.name),
-      );
+      if (statements.length !== 1) return;
 
-      if (hasConditionalOnDependency) {
+      const soleStatement = statements[0];
+      if (
+        soleStatement.type === "IfStatement" &&
+        soleStatement.test?.type === "Identifier" &&
+        dependencyNames.has(soleStatement.test.name)
+      ) {
         context.report({
           node,
           message:
@@ -175,7 +176,7 @@ export const noDerivedUseState: Rule = {
         if (componentPropNames.has(initializer.name)) {
           context.report({
             node,
-            message: `useState initialized from prop "${initializer.name}" — derive it during render instead of syncing with state`,
+            message: `useState initialized from prop "${initializer.name}" — if this value should stay in sync with the prop, derive it during render instead`,
           });
         }
       },
@@ -226,6 +227,8 @@ export const rerenderLazyStateInit: Rule = {
         initializer.callee?.type === "Identifier"
           ? initializer.callee.name
           : (initializer.callee?.property?.name ?? "fn");
+
+      if (TRIVIAL_INITIALIZER_NAMES.has(calleeName)) return;
 
       context.report({
         node: initializer,

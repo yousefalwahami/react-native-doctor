@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 import { main } from "knip";
 import { createOptions } from "knip/session";
@@ -68,15 +69,73 @@ const silenced = async <T>(fn: () => Promise<T>): Promise<T> => {
   }
 };
 
-export const runKnip = async (rootDirectory: string): Promise<Diagnostic[]> => {
+const findMonorepoRoot = (directory: string): string | null => {
+  let currentDirectory = path.dirname(directory);
+
+  while (currentDirectory !== path.dirname(currentDirectory)) {
+    const hasWorkspaceConfig =
+      fs.existsSync(path.join(currentDirectory, "pnpm-workspace.yaml")) ||
+      (() => {
+        const packageJsonPath = path.join(currentDirectory, "package.json");
+        if (!fs.existsSync(packageJsonPath)) return false;
+        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+        return Array.isArray(packageJson.workspaces) || packageJson.workspaces?.packages;
+      })();
+
+    if (hasWorkspaceConfig) return currentDirectory;
+    currentDirectory = path.dirname(currentDirectory);
+  }
+
+  return null;
+};
+
+const runKnipWithOptions = async (
+  knipCwd: string,
+  workspaceName?: string,
+): Promise<KnipResults> => {
   const options = await silenced(() =>
     createOptions({
-      cwd: rootDirectory,
+      cwd: knipCwd,
       isShowProgress: false,
+      ...(workspaceName ? { workspace: workspaceName } : {}),
     }),
   );
+  return (await silenced(() => main(options))) as KnipResults;
+};
 
-  const { issues } = (await silenced(() => main(options))) as KnipResults;
+const hasNodeModules = (directory: string): boolean => {
+  const nodeModulesPath = path.join(directory, "node_modules");
+  return fs.existsSync(nodeModulesPath) && fs.statSync(nodeModulesPath).isDirectory();
+};
+
+export const runKnip = async (rootDirectory: string): Promise<Diagnostic[]> => {
+  const monorepoRoot = findMonorepoRoot(rootDirectory);
+  const hasInstalledDependencies =
+    hasNodeModules(rootDirectory) || (monorepoRoot !== null && hasNodeModules(monorepoRoot));
+
+  if (!hasInstalledDependencies) {
+    return [];
+  }
+
+  let knipResult: KnipResults;
+
+  if (monorepoRoot) {
+    const packageJsonPath = path.join(rootDirectory, "package.json");
+    const packageJson = fs.existsSync(packageJsonPath)
+      ? JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"))
+      : {};
+    const workspaceName = packageJson.name ?? path.basename(rootDirectory);
+
+    try {
+      knipResult = await runKnipWithOptions(monorepoRoot, workspaceName);
+    } catch {
+      knipResult = await runKnipWithOptions(rootDirectory);
+    }
+  } else {
+    knipResult = await runKnipWithOptions(rootDirectory);
+  }
+
+  const { issues } = knipResult;
   const diagnostics: Diagnostic[] = [];
 
   for (const unusedFile of issues.files) {

@@ -1,4 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
+
+const MemoChild = memo(({ onClick }: { onClick: () => void }) => (
+  <button onClick={onClick}>click</button>
+));
+
+const ParentWithInlinePropOnMemo = () => <MemoChild onClick={() => console.log("inline")} />;
 
 const SimpleMemoComponent = ({ count }: { count: number }) => {
   const doubled = useMemo(() => count * 2, [count]);
@@ -50,6 +56,8 @@ const GlobalCssVarComponent = () => {
 };
 
 export {
+  MemoChild,
+  ParentWithInlinePropOnMemo,
   SimpleMemoComponent,
   LayoutAnimationComponent,
   TransitionAllComponent,

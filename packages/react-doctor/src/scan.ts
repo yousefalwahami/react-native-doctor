@@ -79,8 +79,7 @@ const printDiagnostics = (diagnostics: Diagnostic[], isVerbose: boolean): void =
     const severitySymbol = firstDiagnostic.severity === "error" ? "✗" : "⚠";
     const icon = colorizeBySeverity(severitySymbol, firstDiagnostic.severity);
     const count = ruleDiagnostics.length;
-    const countLabel =
-      count > 1 ? colorizeBySeverity(` (${count})`, firstDiagnostic.severity) : "";
+    const countLabel = count > 1 ? colorizeBySeverity(` (${count})`, firstDiagnostic.severity) : "";
 
     logger.log(`  ${icon} ${firstDiagnostic.message}${countLabel}`);
     if (firstDiagnostic.help) {

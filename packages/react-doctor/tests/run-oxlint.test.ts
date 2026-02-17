@@ -123,11 +123,6 @@ describe("runOxlint", () => {
   describeRules(
     "architecture rules",
     {
-      "no-generic-handler-names": {
-        fixture: "architecture-issues.tsx",
-        ruleSource: "rules/architecture.ts",
-        category: "Architecture",
-      },
       "no-giant-component": {
         fixture: "giant-component.tsx",
         ruleSource: "rules/architecture.ts",
@@ -150,6 +145,10 @@ describe("runOxlint", () => {
   describeRules(
     "performance rules",
     {
+      "no-inline-prop-on-memo-component": {
+        fixture: "performance-issues.tsx",
+        ruleSource: "rules/performance.ts",
+      },
       "no-usememo-simple-expression": {
         fixture: "performance-issues.tsx",
         ruleSource: "rules/performance.ts",
@@ -181,10 +180,6 @@ describe("runOxlint", () => {
         ruleSource: "rules/performance.ts",
       },
       "rendering-animate-svg-wrapper": {
-        fixture: "performance-issues.tsx",
-        ruleSource: "rules/performance.ts",
-      },
-      "rendering-usetransition-loading": {
         fixture: "performance-issues.tsx",
         ruleSource: "rules/performance.ts",
       },
@@ -233,10 +228,6 @@ describe("runOxlint", () => {
         ruleSource: "rules/bundle-size.ts",
       },
       "prefer-dynamic-import": {
-        fixture: "bundle-issues.tsx",
-        ruleSource: "rules/bundle-size.ts",
-      },
-      "no-barrel-import": {
         fixture: "bundle-issues.tsx",
         ruleSource: "rules/bundle-size.ts",
       },

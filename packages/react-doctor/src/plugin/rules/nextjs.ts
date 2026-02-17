@@ -2,8 +2,10 @@ import {
   APP_DIRECTORY_PATTERN,
   EFFECT_HOOK_NAMES,
   GOOGLE_FONTS_PATTERN,
+  INTERNAL_PAGE_PATH_PATTERN,
   MUTATING_ROUTE_SEGMENTS,
   NEXTJS_NAVIGATION_FUNCTIONS,
+  OG_ROUTE_PATTERN,
   PAGE_FILE_PATTERN,
   PAGE_OR_LAYOUT_FILE_PATTERN,
   PAGES_DIRECTORY_PATTERN,
@@ -26,17 +28,23 @@ import {
 import type { EsTreeNode, Rule, RuleContext } from "../types.js";
 
 export const nextjsNoImgElement: Rule = {
-  create: (context: RuleContext) => ({
-    JSXOpeningElement(node: EsTreeNode) {
-      if (node.name?.type === "JSXIdentifier" && node.name.name === "img") {
-        context.report({
-          node,
-          message:
-            "Use next/image instead of <img> — provides automatic optimization, lazy loading, and responsive srcset",
-        });
-      }
-    },
-  }),
+  create: (context: RuleContext) => {
+    const filename = context.getFilename?.() ?? "";
+    const isOgRoute = OG_ROUTE_PATTERN.test(filename);
+
+    return {
+      JSXOpeningElement(node: EsTreeNode) {
+        if (isOgRoute) return;
+        if (node.name?.type === "JSXIdentifier" && node.name.name === "img") {
+          context.report({
+            node,
+            message:
+              "Use next/image instead of <img> — provides automatic optimization, lazy loading, and responsive srcset",
+          });
+        }
+      },
+    };
+  },
 };
 
 export const nextjsAsyncClientComponent: Rule = {
@@ -144,6 +152,7 @@ export const nextjsMissingMetadata: Rule = {
     Program(programNode: EsTreeNode) {
       const filename = context.getFilename?.() ?? "";
       if (!PAGE_FILE_PATTERN.test(filename)) return;
+      if (INTERNAL_PAGE_PATH_PATTERN.test(filename)) return;
 
       const hasMetadataExport = programNode.body?.some((statement: EsTreeNode) => {
         if (statement.type !== "ExportNamedDeclaration") return false;

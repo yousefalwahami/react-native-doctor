@@ -80,7 +80,8 @@ const SequentialAwaitComponent = () => {
   const loadData = async () => {
     const users = await fetch("/api/users");
     const posts = await fetch("/api/posts");
-    return { users, posts };
+    const comments = await fetch("/api/comments");
+    return { users, posts, comments };
   };
   return <button onClick={loadData}>Load</button>;
 };

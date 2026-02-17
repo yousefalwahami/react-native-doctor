@@ -1,6 +1,5 @@
 import {
   noGiantComponent,
-  noGenericHandlerNames,
   noNestedComponentDefinition,
   noRenderInRender,
 } from "./rules/architecture.js";
@@ -57,8 +56,8 @@ import {
   noTransitionAll,
   noUsememoSimpleExpression,
   renderingAnimateSvgWrapper,
+  noInlinePropOnMemoComponent,
   renderingHydrationNoFlicker,
-  renderingUsetransitionLoading,
   rerenderMemoWithDefaultValue,
 } from "./rules/performance.js";
 import { noEval, noSecretsInClientCode } from "./rules/security.js";
@@ -89,7 +88,6 @@ const plugin: RulePlugin = {
     "rerender-functional-setstate": rerenderFunctionalSetstate,
     "rerender-dependencies": rerenderDependencies,
 
-    "no-generic-handler-names": noGenericHandlerNames,
     "no-giant-component": noGiantComponent,
     "no-render-in-render": noRenderInRender,
     "no-nested-component-definition": noNestedComponentDefinition,
@@ -98,7 +96,7 @@ const plugin: RulePlugin = {
     "no-layout-property-animation": noLayoutPropertyAnimation,
     "rerender-memo-with-default-value": rerenderMemoWithDefaultValue,
     "rendering-animate-svg-wrapper": renderingAnimateSvgWrapper,
-    "rendering-usetransition-loading": renderingUsetransitionLoading,
+    "no-inline-prop-on-memo-component": noInlinePropOnMemoComponent,
     "rendering-hydration-no-flicker": renderingHydrationNoFlicker,
 
     "no-transition-all": noTransitionAll,

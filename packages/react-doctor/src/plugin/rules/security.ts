@@ -1,4 +1,9 @@
-import { SECRET_MIN_LENGTH_CHARS, SECRET_PATTERNS, SECRET_VARIABLE_PATTERN } from "../constants.js";
+import {
+  SECRET_FALSE_POSITIVE_SUFFIXES,
+  SECRET_MIN_LENGTH_CHARS,
+  SECRET_PATTERNS,
+  SECRET_VARIABLE_PATTERN,
+} from "../constants.js";
 import type { EsTreeNode, Rule, RuleContext } from "../types.js";
 
 export const noEval: Rule = {
@@ -44,8 +49,12 @@ export const noSecretsInClientCode: Rule = {
       const variableName = node.id.name;
       const literalValue = node.init.value;
 
+      const trailingSuffix = variableName.split("_").pop()?.toLowerCase() ?? "";
+      const isUiConstant = SECRET_FALSE_POSITIVE_SUFFIXES.has(trailingSuffix);
+
       if (
         SECRET_VARIABLE_PATTERN.test(variableName) &&
+        !isUiConstant &&
         literalValue.length > SECRET_MIN_LENGTH_CHARS
       ) {
         context.report({

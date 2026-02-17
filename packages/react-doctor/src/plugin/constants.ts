@@ -1,9 +1,9 @@
-export const GIANT_COMPONENT_LINE_THRESHOLD = 200;
-export const CASCADING_SET_STATE_THRESHOLD = 2;
-export const RELATED_USE_STATE_THRESHOLD = 3;
+export const GIANT_COMPONENT_LINE_THRESHOLD = 300;
+export const CASCADING_SET_STATE_THRESHOLD = 3;
+export const RELATED_USE_STATE_THRESHOLD = 5;
 export const DEEP_NESTING_THRESHOLD = 3;
 export const DUPLICATE_STORAGE_READ_THRESHOLD = 2;
-export const SEQUENTIAL_AWAIT_THRESHOLD = 2;
+export const SEQUENTIAL_AWAIT_THRESHOLD = 3;
 export const SECRET_MIN_LENGTH_CHARS = 8;
 export const AUTH_CHECK_LOOKAHEAD_STATEMENTS = 3;
 
@@ -109,14 +109,93 @@ export const SECRET_PATTERNS = [
 
 export const SECRET_VARIABLE_PATTERN = /(?:api_?key|secret|token|password|credential|auth)/i;
 
-export const LOADING_STATE_PATTERN = /(?:loading|isLoading|isPending|isSubmitting|isFetching)/i;
+export const SECRET_FALSE_POSITIVE_SUFFIXES = new Set([
+  "modal",
+  "label",
+  "text",
+  "title",
+  "name",
+  "id",
+  "key",
+  "url",
+  "path",
+  "route",
+  "page",
+  "param",
+  "field",
+  "column",
+  "header",
+  "placeholder",
+  "description",
+  "type",
+  "icon",
+  "class",
+  "style",
+  "variant",
+  "event",
+  "action",
+  "status",
+  "state",
+  "mode",
+  "flag",
+  "option",
+  "config",
+  "message",
+  "error",
+  "display",
+  "view",
+  "component",
+  "element",
+  "container",
+  "wrapper",
+  "button",
+  "link",
+  "input",
+  "select",
+  "dialog",
+  "menu",
+  "form",
+  "step",
+  "index",
+  "count",
+  "length",
+  "role",
+  "scope",
+  "context",
+  "provider",
+  "ref",
+  "handler",
+  "query",
+  "schema",
+  "constant",
+]);
 
-export const EVENT_PROP_PATTERN = /^on[A-Z]/;
+export const LOADING_STATE_PATTERN = /^(?:isLoading|isPending)$/;
+
+export const GENERIC_EVENT_SUFFIXES = new Set(["Click", "Change", "Input", "Blur", "Focus"]);
+
+export const TRIVIAL_INITIALIZER_NAMES = new Set([
+  "Boolean",
+  "String",
+  "Number",
+  "Array",
+  "Object",
+  "parseInt",
+  "parseFloat",
+]);
+
 export const SETTER_PATTERN = /^set[A-Z]/;
 export const RENDER_FUNCTION_PATTERN = /^render[A-Z]/;
 export const UPPERCASE_PATTERN = /^[A-Z]/;
 export const PAGE_FILE_PATTERN = /\/page\.(tsx?|jsx?)$/;
 export const PAGE_OR_LAYOUT_FILE_PATTERN = /\/(page|layout)\.(tsx?|jsx?)$/;
+
+export const INTERNAL_PAGE_PATH_PATTERN =
+  /\/(?:(?:\((?:dashboard|admin|settings|account|internal|manage|console|portal|auth|onboarding|app|ee|protected)\))|(?:dashboard|admin|settings|account|internal|manage|console|portal))\//i;
+
+export const TEST_FILE_PATTERN = /\.(?:test|spec|stories)\.[tj]sx?$/;
+export const OG_ROUTE_PATTERN = /\/og\b/i;
+
 export const PAGES_DIRECTORY_PATTERN = /\/pages\//;
 export const SERVER_ACTION_FILE_PATTERN = /actions?\.(tsx?|jsx?)$/;
 export const SERVER_ACTION_DIRECTORY_PATTERN = /\/actions\//;

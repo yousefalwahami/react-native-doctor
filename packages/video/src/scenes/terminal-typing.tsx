@@ -1,8 +1,4 @@
-import {
-  AbsoluteFill,
-  interpolate,
-  useCurrentFrame,
-} from "remotion";
+import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import {
   BACKGROUND_COLOR,
   CHAR_FRAMES,
@@ -20,15 +16,11 @@ export const TerminalTyping = () => {
 
   const typedCharCount = Math.min(
     COMMAND.length,
-    Math.max(
-      0,
-      Math.floor((frame - TYPING_INITIAL_DELAY_FRAMES) / CHAR_FRAMES),
-    ),
+    Math.max(0, Math.floor((frame - TYPING_INITIAL_DELAY_FRAMES) / CHAR_FRAMES)),
   );
   const typedCommand = COMMAND.slice(0, typedCharCount);
   const isTypingDone = typedCharCount >= COMMAND.length;
-  const isTypingActive =
-    frame >= TYPING_INITIAL_DELAY_FRAMES && !isTypingDone;
+  const isTypingActive = frame >= TYPING_INITIAL_DELAY_FRAMES && !isTypingDone;
 
   const cursorOpacity = isTypingActive
     ? 1

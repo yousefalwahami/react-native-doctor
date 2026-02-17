@@ -4,6 +4,7 @@ import {
   DUPLICATE_STORAGE_READ_THRESHOLD,
   SEQUENTIAL_AWAIT_THRESHOLD,
   STORAGE_OBJECTS,
+  TEST_FILE_PATTERN,
 } from "../constants.js";
 import { createLoopAwareVisitors, isMemberProperty, walkAst } from "../helpers.js";
 import type { EsTreeNode, Rule, RuleContext } from "../types.js";
@@ -215,34 +216,40 @@ export const jsEarlyExit: Rule = {
 };
 
 export const asyncParallel: Rule = {
-  create: (context: RuleContext) => ({
-    BlockStatement(node: EsTreeNode) {
-      const consecutiveAwaitStatements: EsTreeNode[] = [];
+  create: (context: RuleContext) => {
+    const filename = context.getFilename?.() ?? "";
+    const isTestFile = TEST_FILE_PATTERN.test(filename);
 
-      const flushConsecutiveAwaits = (): void => {
-        if (consecutiveAwaitStatements.length >= SEQUENTIAL_AWAIT_THRESHOLD) {
-          reportIfIndependent(consecutiveAwaitStatements, context);
+    return {
+      BlockStatement(node: EsTreeNode) {
+        if (isTestFile) return;
+        const consecutiveAwaitStatements: EsTreeNode[] = [];
+
+        const flushConsecutiveAwaits = (): void => {
+          if (consecutiveAwaitStatements.length >= SEQUENTIAL_AWAIT_THRESHOLD) {
+            reportIfIndependent(consecutiveAwaitStatements, context);
+          }
+          consecutiveAwaitStatements.length = 0;
+        };
+
+        for (const statement of node.body ?? []) {
+          const isAwaitStatement =
+            (statement.type === "VariableDeclaration" &&
+              statement.declarations?.length === 1 &&
+              statement.declarations[0].init?.type === "AwaitExpression") ||
+            (statement.type === "ExpressionStatement" &&
+              statement.expression?.type === "AwaitExpression");
+
+          if (isAwaitStatement) {
+            consecutiveAwaitStatements.push(statement);
+          } else {
+            flushConsecutiveAwaits();
+          }
         }
-        consecutiveAwaitStatements.length = 0;
-      };
-
-      for (const statement of node.body ?? []) {
-        const isAwaitStatement =
-          (statement.type === "VariableDeclaration" &&
-            statement.declarations?.length === 1 &&
-            statement.declarations[0].init?.type === "AwaitExpression") ||
-          (statement.type === "ExpressionStatement" &&
-            statement.expression?.type === "AwaitExpression");
-
-        if (isAwaitStatement) {
-          consecutiveAwaitStatements.push(statement);
-        } else {
-          flushConsecutiveAwaits();
-        }
-      }
-      flushConsecutiveAwaits();
-    },
-  }),
+        flushConsecutiveAwaits();
+      },
+    };
+  },
 };
 
 const reportIfIndependent = (statements: EsTreeNode[], context: RuleContext): void => {

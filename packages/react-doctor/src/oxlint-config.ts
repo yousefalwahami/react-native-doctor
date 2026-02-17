@@ -7,7 +7,7 @@ const NEXTJS_RULES: Record<string, string> = {
   "react-doctor/nextjs-no-img-element": "warn",
   "react-doctor/nextjs-async-client-component": "error",
   "react-doctor/nextjs-no-a-element": "warn",
-  "react-doctor/nextjs-no-use-search-params-without-suspense": "error",
+  "react-doctor/nextjs-no-use-search-params-without-suspense": "warn",
   "react-doctor/nextjs-no-client-fetch-for-server-data": "warn",
   "react-doctor/nextjs-missing-metadata": "warn",
   "react-doctor/nextjs-no-client-side-redirect": "warn",
@@ -39,13 +39,6 @@ const REACT_COMPILER_RULES: Record<string, string> = {
   "react-hooks-js/void-use-memo": "error",
   "react-hooks-js/incompatible-library": "error",
   "react-hooks-js/todo": "error",
-};
-
-const REACT_PERF_RULES: Record<string, string> = {
-  "react-perf/jsx-no-new-object-as-prop": "warn",
-  "react-perf/jsx-no-new-array-as-prop": "warn",
-  "react-perf/jsx-no-new-function-as-prop": "warn",
-  "react-perf/jsx-no-jsx-as-prop": "warn",
 };
 
 interface OxlintConfigOptions {
@@ -85,7 +78,6 @@ export const createOxlintConfig = ({
     "react/jsx-no-script-url": "error",
     "react/no-render-return-value": "warn",
     "react/no-string-refs": "warn",
-    "react/no-unescaped-entities": "warn",
     "react/no-is-mounted": "warn",
     "react/require-render-return": "error",
     "react/no-unknown-property": "warn",
@@ -106,7 +98,7 @@ export const createOxlintConfig = ({
     "jsx-a11y/no-distracting-elements": "error",
     "jsx-a11y/iframe-has-title": "warn",
 
-    ...(hasReactCompiler ? REACT_COMPILER_RULES : REACT_PERF_RULES),
+    ...(hasReactCompiler ? REACT_COMPILER_RULES : {}),
 
     "react-doctor/no-derived-state-effect": "error",
     "react-doctor/no-fetch-in-effect": "error",
@@ -118,7 +110,6 @@ export const createOxlintConfig = ({
     "react-doctor/rerender-functional-setstate": "warn",
     "react-doctor/rerender-dependencies": "error",
 
-    "react-doctor/no-generic-handler-names": "warn",
     "react-doctor/no-giant-component": "warn",
     "react-doctor/no-render-in-render": "warn",
     "react-doctor/no-nested-component-definition": "error",
@@ -127,7 +118,7 @@ export const createOxlintConfig = ({
     "react-doctor/no-layout-property-animation": "error",
     "react-doctor/rerender-memo-with-default-value": "warn",
     "react-doctor/rendering-animate-svg-wrapper": "warn",
-    "react-doctor/rendering-usetransition-loading": "warn",
+    "react-doctor/no-inline-prop-on-memo-component": "warn",
     "react-doctor/rendering-hydration-no-flicker": "warn",
 
     "react-doctor/no-transition-all": "warn",

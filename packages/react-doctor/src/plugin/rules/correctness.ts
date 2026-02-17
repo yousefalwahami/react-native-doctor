@@ -35,6 +35,37 @@ const extractIndexName = (node: EsTreeNode): string | null => {
   return null;
 };
 
+const isInsideStaticPlaceholderMap = (node: EsTreeNode): boolean => {
+  let current = node;
+  while (current.parent) {
+    current = current.parent;
+    if (
+      current.type === "CallExpression" &&
+      current.callee?.type === "MemberExpression" &&
+      current.callee.property?.name === "map"
+    ) {
+      const receiver = current.callee.object;
+      if (receiver?.type === "CallExpression") {
+        const callee = receiver.callee;
+        if (
+          callee?.type === "MemberExpression" &&
+          callee.object?.type === "Identifier" &&
+          callee.object.name === "Array" &&
+          callee.property?.name === "from"
+        )
+          return true;
+      }
+      if (
+        receiver?.type === "NewExpression" &&
+        receiver.callee?.type === "Identifier" &&
+        receiver.callee.name === "Array"
+      )
+        return true;
+    }
+  }
+  return false;
+};
+
 export const noArrayIndexAsKey: Rule = {
   create: (context: RuleContext) => ({
     JSXAttribute(node: EsTreeNode) {
@@ -42,12 +73,13 @@ export const noArrayIndexAsKey: Rule = {
       if (!node.value || node.value.type !== "JSXExpressionContainer") return;
 
       const indexName = extractIndexName(node.value.expression);
-      if (indexName) {
-        context.report({
-          node,
-          message: `Array index "${indexName}" used as key — causes bugs when list is reordered or filtered`,
-        });
-      }
+      if (!indexName) return;
+      if (isInsideStaticPlaceholderMap(node)) return;
+
+      context.report({
+        node,
+        message: `Array index "${indexName}" used as key — causes bugs when list is reordered or filtered`,
+      });
     },
   }),
 };
@@ -96,7 +128,7 @@ export const noPreventDefault: Rule = {
 
       const message =
         elementName === "form"
-          ? "preventDefault() on <form> onSubmit — form won't work without JavaScript"
+          ? "preventDefault() on <form> onSubmit — form won't work without JavaScript. Consider using a server action for progressive enhancement"
           : "preventDefault() on <a> onClick — use a <button> or routing component instead";
 
       context.report({ node, message });

@@ -22,6 +22,7 @@ import {
 } from "../constants";
 import { getBottomOverlayGradient } from "../utils/get-bottom-overlay-gradient";
 import { fontFamily } from "../utils/font";
+import { getDoctorFace, getScoreColor, getScoreLabel } from "../utils/score-display";
 
 const HERO_FACE_FONT_SIZE_PX = 80;
 const HERO_NUMBER_FONT_SIZE_PX = 96;
@@ -50,24 +51,6 @@ const OVERLAY_FADE_OUT_FRAMES = 15;
 const OVERLAY_END_FRAME =
   OVERLAY_START_FRAME + OVERLAY_FADE_IN_FRAMES + OVERLAY_HOLD_FRAMES + OVERLAY_FADE_OUT_FRAMES;
 const OVERLAY_TITLE_FONT_SIZE_PX = 88;
-
-const getScoreColor = (score: number) => {
-  if (score >= 75) return "#4ade80";
-  if (score >= 50) return "#eab308";
-  return RED_COLOR;
-};
-
-const getScoreLabel = (score: number) => {
-  if (score >= 75) return "Great";
-  if (score >= 50) return "Needs work";
-  return "Critical";
-};
-
-const getDoctorFace = (score: number): [string, string] => {
-  if (score >= 75) return ["◠ ◠", " ▽ "];
-  if (score >= 50) return ["• •", " ─ "];
-  return ["x x", " ▽ "];
-};
 
 const lerpSize = (heroSize: number, smallSize: number, progress: number) =>
   heroSize + (smallSize - heroSize) * progress;

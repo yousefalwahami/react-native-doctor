@@ -1,6 +1,6 @@
 import {
+  GENERIC_EVENT_SUFFIXES,
   GIANT_COMPONENT_LINE_THRESHOLD,
-  EVENT_PROP_PATTERN,
   RENDER_FUNCTION_PATTERN,
 } from "../constants.js";
 import { isComponentAssignment, isComponentDeclaration, isUppercaseName } from "../helpers.js";
@@ -9,12 +9,13 @@ import type { EsTreeNode, Rule, RuleContext } from "../types.js";
 export const noGenericHandlerNames: Rule = {
   create: (context: RuleContext) => ({
     JSXAttribute(node: EsTreeNode) {
-      if (node.name?.type !== "JSXIdentifier" || !EVENT_PROP_PATTERN.test(node.name.name)) return;
+      if (node.name?.type !== "JSXIdentifier" || !node.name.name.startsWith("on")) return;
       if (!node.value || node.value.type !== "JSXExpressionContainer") return;
 
       const eventSuffix = node.name.name.slice(2);
-      const mirroredHandlerName = `handle${eventSuffix}`;
+      if (!GENERIC_EVENT_SUFFIXES.has(eventSuffix)) return;
 
+      const mirroredHandlerName = `handle${eventSuffix}`;
       const expression = node.value.expression;
       if (expression?.type === "Identifier" && expression.name === mirroredHandlerName) {
         context.report({

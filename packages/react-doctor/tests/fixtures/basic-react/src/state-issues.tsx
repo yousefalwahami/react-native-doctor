@@ -30,15 +30,17 @@ const LazyInitComponent = () => {
 const CascadingSetStateComponent = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [age, setAge] = useState(0);
 
   useEffect(() => {
     setName("John");
     setEmail("john@example.com");
+    setAge(30);
   }, []);
 
   return (
     <div>
-      {name} {email}
+      {name} {email} {age}
     </div>
   );
 };
@@ -62,12 +64,16 @@ const PreferUseReducerComponent = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [age, setAge] = useState(0);
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
 
   return (
     <div>
       <input value={name} onChange={(event) => setName(event.target.value)} />
       <input value={email} onChange={(event) => setEmail(event.target.value)} />
       <input value={age} type="number" onChange={(event) => setAge(Number(event.target.value))} />
+      <input value={address} onChange={(event) => setAddress(event.target.value)} />
+      <input value={phone} onChange={(event) => setPhone(event.target.value)} />
     </div>
   );
 };
