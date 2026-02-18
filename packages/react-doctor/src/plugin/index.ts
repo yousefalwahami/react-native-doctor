@@ -69,7 +69,41 @@ import {
   rnNoLegacyShadowStyles,
   rnPreferReanimated,
   rnNoSingleElementStyleArray,
+  rnFlatlistInlineStyle,
+  rnFlatlistMissingKeyextractor,
+  rnScrollviewForLongLists,
+  rnImageMissingDimensions,
+  rnInlineStyleInRender,
+  rnMissingMemoOnListItem,
+  rnHeavyComputationInRender,
+  rnAvoidAnonymousFunctionsInJsx,
 } from "./rules/react-native.js";
+import {
+  rnTouchableMissingAccessibilityLabel,
+  rnMissingAccessibilityRole,
+  rnNonDescriptiveAccessibilityLabel,
+  rnImageMissingAccessible,
+  rnTouchableHitslopMissing,
+} from "./rules/rn-accessibility.js";
+import {
+  rnHardcodedColors,
+  rnPlatformOsBranching,
+  rnUseWindowDimensions,
+  rnPropDrillingDepth,
+  rnGodComponent,
+  rnUnnecessaryUseEffect,
+} from "./rules/rn-architecture.js";
+import {
+  rnNavigatorInlineComponent,
+  rnMissingScreenOptionsDefaults,
+} from "./rules/rn-navigation.js";
+import {
+  expoMissingDarkModeSupport,
+  expoConstantsMisuse,
+  expoRouterLayoutMissingErrorBoundary,
+  expoHardcodedApiKeys,
+  expoRouterMissingNotFound,
+} from "./rules/rn-expo.js";
 import { noEval, noSecretsInClientCode } from "./rules/security.js";
 import { serverAfterNonblocking, serverAuthActions } from "./rules/server.js";
 import {
@@ -132,7 +166,8 @@ const plugin: RulePlugin = {
     "nextjs-no-img-element": nextjsNoImgElement,
     "nextjs-async-client-component": nextjsAsyncClientComponent,
     "nextjs-no-a-element": nextjsNoAElement,
-    "nextjs-no-use-search-params-without-suspense": nextjsNoUseSearchParamsWithoutSuspense,
+    "nextjs-no-use-search-params-without-suspense":
+      nextjsNoUseSearchParamsWithoutSuspense,
     "nextjs-no-client-fetch-for-server-data": nextjsNoClientFetchForServerData,
     "nextjs-missing-metadata": nextjsMissingMetadata,
     "nextjs-no-client-side-redirect": nextjsNoClientSideRedirect,
@@ -170,6 +205,36 @@ const plugin: RulePlugin = {
     "rn-no-legacy-shadow-styles": rnNoLegacyShadowStyles,
     "rn-prefer-reanimated": rnPreferReanimated,
     "rn-no-single-element-style-array": rnNoSingleElementStyleArray,
+    "rn-flatlist-inline-style": rnFlatlistInlineStyle,
+    "rn-flatlist-missing-keyextractor": rnFlatlistMissingKeyextractor,
+    "rn-scrollview-for-long-lists": rnScrollviewForLongLists,
+    "rn-image-missing-dimensions": rnImageMissingDimensions,
+    "rn-inline-style-in-render": rnInlineStyleInRender,
+    "rn-missing-memo-on-list-item": rnMissingMemoOnListItem,
+    "rn-heavy-computation-in-render": rnHeavyComputationInRender,
+    "rn-avoid-anonymous-functions-in-jsx": rnAvoidAnonymousFunctionsInJsx,
+
+    "rn-touchable-missing-accessibility-label": rnTouchableMissingAccessibilityLabel,
+    "rn-missing-accessibility-role": rnMissingAccessibilityRole,
+    "rn-non-descriptive-accessibility-label": rnNonDescriptiveAccessibilityLabel,
+    "rn-image-missing-accessible": rnImageMissingAccessible,
+    "rn-touchable-hitslop-missing": rnTouchableHitslopMissing,
+
+    "rn-hardcoded-colors": rnHardcodedColors,
+    "rn-platform-os-branching": rnPlatformOsBranching,
+    "rn-use-window-dimensions": rnUseWindowDimensions,
+    "rn-prop-drilling-depth": rnPropDrillingDepth,
+    "rn-god-component": rnGodComponent,
+    "rn-unnecessary-useeffect": rnUnnecessaryUseEffect,
+
+    "rn-navigator-inline-component": rnNavigatorInlineComponent,
+    "rn-missing-screen-options-defaults": rnMissingScreenOptionsDefaults,
+
+    "expo-missing-dark-mode-support": expoMissingDarkModeSupport,
+    "expo-constants-misuse": expoConstantsMisuse,
+    "expo-router-layout-missing-error-boundary": expoRouterLayoutMissingErrorBoundary,
+    "expo-hardcoded-api-keys": expoHardcodedApiKeys,
+    "expo-router-missing-not-found": expoRouterMissingNotFound,
   },
 };
 

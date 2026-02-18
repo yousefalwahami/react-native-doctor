@@ -107,7 +107,8 @@ export const SECRET_PATTERNS = [
   /^sk-[a-zA-Z0-9]{32,}$/,
 ];
 
-export const SECRET_VARIABLE_PATTERN = /(?:api_?key|secret|token|password|credential|auth)/i;
+export const SECRET_VARIABLE_PATTERN =
+  /(?:api_?key|secret|token|password|credential|auth)/i;
 
 export const SECRET_FALSE_POSITIVE_SUFFIXES = new Set([
   "modal",
@@ -172,7 +173,13 @@ export const SECRET_FALSE_POSITIVE_SUFFIXES = new Set([
 
 export const LOADING_STATE_PATTERN = /^(?:isLoading|isPending)$/;
 
-export const GENERIC_EVENT_SUFFIXES = new Set(["Click", "Change", "Input", "Blur", "Focus"]);
+export const GENERIC_EVENT_SUFFIXES = new Set([
+  "Click",
+  "Change",
+  "Input",
+  "Blur",
+  "Focus",
+]);
 
 export const TRIVIAL_INITIALIZER_NAMES = new Set([
   "Boolean",
@@ -210,7 +217,8 @@ export const NEXTJS_NAVIGATION_FUNCTIONS = new Set([
 
 export const GOOGLE_FONTS_PATTERN = /fonts\.googleapis\.com/;
 
-export const POLYFILL_SCRIPT_PATTERN = /polyfill\.io|polyfill\.min\.js|cdn\.polyfill/;
+export const POLYFILL_SCRIPT_PATTERN =
+  /polyfill\.io|polyfill\.min\.js|cdn\.polyfill/;
 
 export const APP_DIRECTORY_PATTERN = /\/app\//;
 
@@ -229,7 +237,12 @@ export const MUTATION_METHOD_NAMES = new Set([
   "append",
 ]);
 
-export const MUTATING_HTTP_METHODS = new Set(["POST", "PUT", "DELETE", "PATCH"]);
+export const MUTATING_HTTP_METHODS = new Set([
+  "POST",
+  "PUT",
+  "DELETE",
+  "PATCH",
+]);
 
 export const MUTATING_ROUTE_SEGMENTS = new Set([
   "logout",
@@ -245,13 +258,26 @@ export const MUTATING_ROUTE_SEGMENTS = new Set([
 ]);
 
 export const EFFECT_HOOK_NAMES = new Set(["useEffect", "useLayoutEffect"]);
-export const HOOKS_WITH_DEPS = new Set(["useEffect", "useLayoutEffect", "useMemo", "useCallback"]);
-export const CHAINABLE_ITERATION_METHODS = new Set(["map", "filter", "forEach", "flatMap"]);
+export const HOOKS_WITH_DEPS = new Set([
+  "useEffect",
+  "useLayoutEffect",
+  "useMemo",
+  "useCallback",
+]);
+export const CHAINABLE_ITERATION_METHODS = new Set([
+  "map",
+  "filter",
+  "forEach",
+  "flatMap",
+]);
 export const STORAGE_OBJECTS = new Set(["localStorage", "sessionStorage"]);
 
 export const LARGE_BLUR_THRESHOLD_PX = 10;
 export const BLUR_VALUE_PATTERN = /blur\((\d+(?:\.\d+)?)px\)/;
-export const ANIMATION_CALLBACK_NAMES = new Set(["requestAnimationFrame", "setInterval"]);
+export const ANIMATION_CALLBACK_NAMES = new Set([
+  "requestAnimationFrame",
+  "setInterval",
+]);
 export const MOTION_LIBRARY_PACKAGES = new Set(["framer-motion", "motion"]);
 
 export const RAW_TEXT_PREVIEW_MAX_CHARS = 30;
@@ -279,7 +305,8 @@ export const DEPRECATED_RN_MODULE_REPLACEMENTS: Record<string, string> = {
 
 export const LEGACY_EXPO_PACKAGE_REPLACEMENTS: Record<string, string> = {
   "expo-av": "expo-audio for audio and expo-video for video",
-  "expo-permissions": "the permissions API in each module (e.g. Camera.requestPermissionsAsync())",
+  "expo-permissions":
+    "the permissions API in each module (e.g. Camera.requestPermissionsAsync())",
   "@expo/vector-icons": "expo-image with sf: source URIs",
 };
 
@@ -290,10 +317,88 @@ export const REACT_NATIVE_LIST_COMPONENTS = new Set([
   "FlashList",
 ]);
 
+export const KEYEXTRACTOR_LIST_COMPONENTS = new Set([
+  "FlatList",
+  "SectionList",
+]);
+
 export const LEGACY_SHADOW_STYLE_PROPERTIES = new Set([
   "shadowColor",
   "shadowOffset",
   "shadowOpacity",
   "shadowRadius",
   "elevation",
+]);
+
+export const INTERACTIVE_EVENT_PROP_PATTERN = /^on[A-Z]/;
+
+export const RN_TOUCHABLE_COMPONENTS = new Set([
+  "TouchableOpacity",
+  "TouchableHighlight",
+  "TouchableNativeFeedback",
+  "TouchableWithoutFeedback",
+  "Pressable",
+]);
+
+export const NON_DESCRIPTIVE_A11Y_LABEL_STRINGS = new Set([
+  "button",
+  "click here",
+  "tap",
+  "tap here",
+  "press",
+  "press here",
+  "icon",
+  "image",
+  "click",
+  "link",
+]);
+
+export const TAP_TARGET_MIN_SIZE_PT = 44;
+
+export const HARDCODED_COLOR_PROPERTY_NAMES = new Set([
+  "color",
+  "backgroundColor",
+  "borderColor",
+  "tintColor",
+  "shadowColor",
+  "overlayColor",
+]);
+
+export const HARDCODED_COLOR_THRESHOLD = 3;
+export const HEX_COLOR_PATTERN = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
+
+export const PLATFORM_OS_BRANCH_THRESHOLD = 3;
+
+export const COMMON_SCREEN_WIDTHS = new Set([
+  320, 360, 375, 390, 393, 412, 414, 428, 430, 480,
+]);
+
+export const COMMON_SCREEN_HEIGHTS = new Set([
+  568, 667, 736, 812, 844, 852, 896, 926, 932, 1024,
+]);
+
+export const GOD_COMPONENT_STATE_THRESHOLD = 10;
+export const GOD_COMPONENT_EFFECT_THRESHOLD = 8;
+
+export const MINIMUM_CHAIN_DEPTH_FOR_HEAVY_COMPUTATION = 2;
+
+export const HEAVY_ARRAY_METHODS = new Set([
+  "filter",
+  "map",
+  "reduce",
+  "sort",
+  "flatMap",
+  "find",
+  "findIndex",
+]);
+
+export const LIST_ITEM_NAME_SUFFIXES = new Set(["Item", "Row", "Cell", "Card"]);
+
+export const EXPO_LIGHT_DARK_COLORS = new Set([
+  "#ffffff",
+  "#fff",
+  "#000000",
+  "#000",
+  "white",
+  "black",
 ]);

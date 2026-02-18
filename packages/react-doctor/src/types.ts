@@ -1,4 +1,10 @@
-export type Framework = "nextjs" | "vite" | "cra" | "remix" | "gatsby" | "unknown";
+export type Framework =
+  | "nextjs"
+  | "vite"
+  | "cra"
+  | "remix"
+  | "gatsby"
+  | "unknown";
 
 export interface ProjectInfo {
   rootDirectory: string;
@@ -89,6 +95,8 @@ export interface ScanOptions {
   verbose?: boolean;
   scoreOnly?: boolean;
   includePaths?: string[];
+  expoOnly?: boolean;
+  rnOnly?: boolean;
 }
 
 export interface DiffInfo {

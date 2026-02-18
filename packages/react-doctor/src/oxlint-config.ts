@@ -3,6 +3,46 @@ import type { Framework } from "./types.js";
 
 const esmRequire = createRequire(import.meta.url);
 
+const RN_RULES: Record<string, string> = {
+  "react-doctor/rn-no-raw-text": "error",
+  "react-doctor/rn-no-deprecated-modules": "error",
+  "react-doctor/rn-no-legacy-expo-packages": "warn",
+  "react-doctor/rn-no-dimensions-get": "warn",
+  "react-doctor/rn-no-inline-flatlist-renderitem": "warn",
+  "react-doctor/rn-no-legacy-shadow-styles": "warn",
+  "react-doctor/rn-prefer-reanimated": "warn",
+  "react-doctor/rn-no-single-element-style-array": "warn",
+  "react-doctor/rn-flatlist-inline-style": "warn",
+  "react-doctor/rn-flatlist-missing-keyextractor": "warn",
+  "react-doctor/rn-scrollview-for-long-lists": "warn",
+  "react-doctor/rn-image-missing-dimensions": "warn",
+  "react-doctor/rn-inline-style-in-render": "warn",
+  "react-doctor/rn-missing-memo-on-list-item": "warn",
+  "react-doctor/rn-heavy-computation-in-render": "warn",
+  "react-doctor/rn-avoid-anonymous-functions-in-jsx": "warn",
+  "react-doctor/rn-touchable-missing-accessibility-label": "error",
+  "react-doctor/rn-missing-accessibility-role": "warn",
+  "react-doctor/rn-non-descriptive-accessibility-label": "warn",
+  "react-doctor/rn-image-missing-accessible": "warn",
+  "react-doctor/rn-touchable-hitslop-missing": "warn",
+  "react-doctor/rn-hardcoded-colors": "warn",
+  "react-doctor/rn-platform-os-branching": "warn",
+  "react-doctor/rn-use-window-dimensions": "warn",
+  "react-doctor/rn-prop-drilling-depth": "warn",
+  "react-doctor/rn-god-component": "warn",
+  "react-doctor/rn-unnecessary-useeffect": "warn",
+  "react-doctor/rn-navigator-inline-component": "warn",
+  "react-doctor/rn-missing-screen-options-defaults": "warn",
+};
+
+const EXPO_RULES: Record<string, string> = {
+  "react-doctor/expo-missing-dark-mode-support": "warn",
+  "react-doctor/expo-constants-misuse": "warn",
+  "react-doctor/expo-router-layout-missing-error-boundary": "warn",
+  "react-doctor/expo-hardcoded-api-keys": "error",
+  "react-doctor/expo-router-missing-not-found": "warn",
+};
+
 const NEXTJS_RULES: Record<string, string> = {
   "react-doctor/nextjs-no-img-element": "warn",
   "react-doctor/nextjs-async-client-component": "error",
@@ -45,12 +85,16 @@ interface OxlintConfigOptions {
   pluginPath: string;
   framework: Framework;
   hasReactCompiler: boolean;
+  isReactNative: boolean;
+  isExpo: boolean;
 }
 
 export const createOxlintConfig = ({
   pluginPath,
   framework,
   hasReactCompiler,
+  isReactNative,
+  isExpo,
 }: OxlintConfigOptions) => ({
   categories: {
     correctness: "off",
@@ -64,7 +108,12 @@ export const createOxlintConfig = ({
   plugins: ["react", "jsx-a11y", ...(hasReactCompiler ? [] : ["react-perf"])],
   jsPlugins: [
     ...(hasReactCompiler
-      ? [{ name: "react-hooks-js", specifier: esmRequire.resolve("eslint-plugin-react-hooks") }]
+      ? [
+          {
+            name: "react-hooks-js",
+            specifier: esmRequire.resolve("eslint-plugin-react-hooks"),
+          },
+        ]
       : []),
     pluginPath,
   ],
@@ -147,5 +196,7 @@ export const createOxlintConfig = ({
 
     "react-doctor/async-parallel": "warn",
     ...(framework === "nextjs" ? NEXTJS_RULES : {}),
+    ...(isReactNative ? RN_RULES : {}),
+    ...(isExpo ? EXPO_RULES : {}),
   },
 });

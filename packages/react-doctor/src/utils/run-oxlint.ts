@@ -6,7 +6,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ERROR_PREVIEW_LENGTH_CHARS, JSX_FILE_PATTERN } from "../constants.js";
 import { createOxlintConfig } from "../oxlint-config.js";
-import type { CleanedDiagnostic, Diagnostic, Framework, OxlintOutput } from "../types.js";
+import type {
+  CleanedDiagnostic,
+  Diagnostic,
+  Framework,
+  OxlintOutput,
+} from "../types.js";
 import { neutralizeDisableDirectives } from "./neutralize-disable-directives.js";
 
 const esmRequire = createRequire(import.meta.url);
@@ -83,6 +88,41 @@ const RULE_CATEGORY_MAP: Record<string, string> = {
   "react-doctor/client-passive-event-listeners": "Performance",
 
   "react-doctor/async-parallel": "Performance",
+
+  "react-doctor/rn-no-raw-text": "React Native",
+  "react-doctor/rn-no-deprecated-modules": "React Native",
+  "react-doctor/rn-no-legacy-expo-packages": "React Native",
+  "react-doctor/rn-no-dimensions-get": "React Native",
+  "react-doctor/rn-no-inline-flatlist-renderitem": "Performance",
+  "react-doctor/rn-no-legacy-shadow-styles": "React Native",
+  "react-doctor/rn-prefer-reanimated": "Performance",
+  "react-doctor/rn-no-single-element-style-array": "Performance",
+  "react-doctor/rn-flatlist-inline-style": "Performance",
+  "react-doctor/rn-flatlist-missing-keyextractor": "Performance",
+  "react-doctor/rn-scrollview-for-long-lists": "Performance",
+  "react-doctor/rn-image-missing-dimensions": "React Native",
+  "react-doctor/rn-inline-style-in-render": "Performance",
+  "react-doctor/rn-missing-memo-on-list-item": "Performance",
+  "react-doctor/rn-heavy-computation-in-render": "Performance",
+  "react-doctor/rn-avoid-anonymous-functions-in-jsx": "Performance",
+  "react-doctor/rn-touchable-missing-accessibility-label": "Accessibility",
+  "react-doctor/rn-missing-accessibility-role": "Accessibility",
+  "react-doctor/rn-non-descriptive-accessibility-label": "Accessibility",
+  "react-doctor/rn-image-missing-accessible": "Accessibility",
+  "react-doctor/rn-touchable-hitslop-missing": "Accessibility",
+  "react-doctor/rn-hardcoded-colors": "Architecture",
+  "react-doctor/rn-platform-os-branching": "Architecture",
+  "react-doctor/rn-use-window-dimensions": "Architecture",
+  "react-doctor/rn-prop-drilling-depth": "Architecture",
+  "react-doctor/rn-god-component": "Architecture",
+  "react-doctor/rn-unnecessary-useeffect": "State & Effects",
+  "react-doctor/rn-navigator-inline-component": "React Native",
+  "react-doctor/rn-missing-screen-options-defaults": "React Native",
+  "react-doctor/expo-missing-dark-mode-support": "Expo",
+  "react-doctor/expo-constants-misuse": "Expo",
+  "react-doctor/expo-router-layout-missing-error-boundary": "Expo",
+  "react-doctor/expo-hardcoded-api-keys": "Security",
+  "react-doctor/expo-router-missing-not-found": "Expo",
 };
 
 const RULE_HELP_MAP: Record<string, string> = {
@@ -204,6 +244,75 @@ const RULE_HELP_MAP: Record<string, string> = {
 
   "async-parallel":
     "Use `const [a, b] = await Promise.all([fetchA(), fetchB()])` to run independent operations concurrently",
+
+  "rn-no-raw-text":
+    "Wrap the text in a <Text> component: `<Text>{value}</Text>` — React Native crashes when text appears outside <Text>",
+  "rn-no-deprecated-modules":
+    "Check the React Native upgrade guide for the replacement module path",
+  "rn-no-legacy-expo-packages":
+    "Run `npx expo install` to install the recommended replacement package",
+  "rn-no-dimensions-get":
+    "Replace with `const { width, height } = useWindowDimensions()` — updates automatically on rotation",
+  "rn-no-inline-flatlist-renderitem":
+    "Extract to a named function: `const renderItem = ({ item }) => <Item data={item} />` or wrap in `useCallback`",
+  "rn-no-legacy-shadow-styles":
+    "Replace with `boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)'` for cross-platform shadow support",
+  "rn-prefer-reanimated":
+    "`import Animated from 'react-native-reanimated'` — runs on the UI thread, no JS bridge overhead",
+  "rn-no-single-element-style-array":
+    "Remove the array wrapper: `style={styles.container}` instead of `style={[styles.container]}`",
+  "rn-flatlist-inline-style":
+    "Extract to `StyleSheet.create()` outside the component: `const styles = StyleSheet.create({ item: { ... } })`",
+  "rn-flatlist-missing-keyextractor":
+    "Add `keyExtractor={(item) => item.id.toString()}` to prevent unnecessary re-renders on list updates",
+  "rn-scrollview-for-long-lists":
+    "Replace `<ScrollView>` + `.map()` with `<FlatList data={items} renderItem={...} />` for virtualized rendering",
+  "rn-image-missing-dimensions":
+    "Add `style={{ width: 100, height: 100 }}` or `width={100} height={100}` props to prevent layout shifts",
+  "rn-inline-style-in-render":
+    "Move to `StyleSheet.create()` outside the component: creates the object once instead of on every render",
+  "rn-missing-memo-on-list-item":
+    "Wrap with `export default React.memo(ComponentName)` to prevent re-renders when the parent FlatList updates",
+  "rn-heavy-computation-in-render":
+    "Wrap in `useMemo`: `const result = useMemo(() => data.filter(...).sort(...), [data])`",
+  "rn-avoid-anonymous-functions-in-jsx":
+    "Extract to a named handler: `const handlePress = useCallback(() => { ... }, [deps])` then use `onPress={handlePress}`",
+  "rn-touchable-missing-accessibility-label":
+    'Add `accessibilityLabel="Descriptive action"` so screen readers can announce the button purpose',
+  "rn-missing-accessibility-role":
+    'Add `accessibilityRole="button"` or the appropriate role — helps screen readers announce the element type',
+  "rn-non-descriptive-accessibility-label":
+    'Use a specific label: `accessibilityLabel="Submit order"` instead of generic words like "button" or "tap here"',
+  "rn-image-missing-accessible":
+    'Add `accessible={true} accessibilityLabel="Description of image"` so screen readers describe the image',
+  "rn-touchable-hitslop-missing":
+    "Add `hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}` to meet the 44pt minimum tap target size",
+  "rn-hardcoded-colors":
+    "Extract to a theme: `import { colors } from '@/theme'` and add `colors.primary`, `colors.background`, etc.",
+  "rn-platform-os-branching":
+    "Split into platform files: `Button.ios.tsx` and `Button.android.tsx` — Metro picks the right one automatically",
+  "rn-use-window-dimensions":
+    "Replace hardcoded pixel values with `const { width, height } = useWindowDimensions()`",
+  "rn-prop-drilling-depth":
+    "Extract shared state to a React context or a state management store to avoid passing props through multiple layers",
+  "rn-god-component":
+    "Split into focused sub-components and custom hooks — e.g. `useFormState`, `<FormHeader />`, `<FormFields />`",
+  "rn-unnecessary-useeffect":
+    "Compute the derived value inline or in a `useMemo` — no effect needed for pure state derivations",
+  "rn-navigator-inline-component":
+    "Extract to a named component: `const HomeScreen = () => <Screen />` then use `component={HomeScreen}`",
+  "rn-missing-screen-options-defaults":
+    "Add `<Stack.Navigator screenOptions={{ headerShown: false }}>` to set consistent defaults for all screens",
+  "expo-missing-dark-mode-support":
+    "Use `const colorScheme = useColorScheme()` and branch: `colorScheme === 'dark' ? darkColor : lightColor`",
+  "expo-constants-misuse":
+    "Replace `Constants.manifest` with `Constants.expoConfig` — `manifest` was removed in SDK 50",
+  "expo-router-layout-missing-error-boundary":
+    "Add `export { default as ErrorBoundary } from 'expo-router'` to your `_layout.tsx` for unhandled route errors",
+  "expo-hardcoded-api-keys":
+    "Move to `app.config.js` `extra` field and access via `Constants.expoConfig.extra.apiKey` — never commit keys to source",
+  "expo-router-missing-not-found":
+    "Create `app/+not-found.tsx` with a `<Link href='/'>Go home</Link>` to handle unknown deep link routes",
 };
 
 const FILEPATH_WITH_LOCATION_PATTERN = /\S+\.\w+:\d+:\d+[\s\S]*$/;
@@ -217,11 +326,16 @@ const cleanDiagnosticMessage = (
   rule: string,
 ): CleanedDiagnostic => {
   if (plugin === "react-hooks-js") {
-    const rawMessage = message.replace(FILEPATH_WITH_LOCATION_PATTERN, "").trim();
+    const rawMessage = message
+      .replace(FILEPATH_WITH_LOCATION_PATTERN, "")
+      .trim();
     return { message: REACT_COMPILER_MESSAGE, help: rawMessage || help };
   }
   const cleaned = message.replace(FILEPATH_WITH_LOCATION_PATTERN, "").trim();
-  return { message: cleaned || message, help: help || RULE_HELP_MAP[rule] || "" };
+  return {
+    message: cleaned || message,
+    help: help || RULE_HELP_MAP[rule] || "",
+  };
 };
 
 const parseRuleCode = (code: string): { plugin: string; rule: string } => {
@@ -232,7 +346,10 @@ const parseRuleCode = (code: string): { plugin: string; rule: string } => {
 
 const resolveOxlintBinary = (): string => {
   const oxlintMainPath = esmRequire.resolve("oxlint");
-  const oxlintPackageDirectory = path.resolve(path.dirname(oxlintMainPath), "..");
+  const oxlintPackageDirectory = path.resolve(
+    path.dirname(oxlintMainPath),
+    "..",
+  );
   return path.join(oxlintPackageDirectory, "bin", "oxlint");
 };
 
@@ -241,7 +358,10 @@ const resolvePluginPath = (): string => {
   const pluginPath = path.join(currentDirectory, "react-doctor-plugin.js");
   if (fs.existsSync(pluginPath)) return pluginPath;
 
-  const distPluginPath = path.resolve(currentDirectory, "../../dist/react-doctor-plugin.js");
+  const distPluginPath = path.resolve(
+    currentDirectory,
+    "../../dist/react-doctor-plugin.js",
+  );
   if (fs.existsSync(distPluginPath)) return distPluginPath;
 
   return pluginPath;
@@ -257,15 +377,26 @@ export const runOxlint = async (
   hasTypeScript: boolean,
   framework: Framework,
   hasReactCompiler: boolean,
+  isReactNative: boolean,
+  isExpo: boolean,
   includePaths?: string[],
 ): Promise<Diagnostic[]> => {
   if (includePaths !== undefined && includePaths.length === 0) {
     return [];
   }
 
-  const configPath = path.join(os.tmpdir(), `react-doctor-oxlintrc-${process.pid}.json`);
+  const configPath = path.join(
+    os.tmpdir(),
+    `react-doctor-oxlintrc-${process.pid}.json`,
+  );
   const pluginPath = resolvePluginPath();
-  const config = createOxlintConfig({ pluginPath, framework, hasReactCompiler });
+  const config = createOxlintConfig({
+    pluginPath,
+    framework,
+    hasReactCompiler,
+    isReactNative,
+    isExpo,
+  });
   const restoreDisableDirectives = neutralizeDisableDirectives(rootDirectory);
 
   try {
@@ -295,11 +426,15 @@ export const runOxlint = async (
       child.stdout.on("data", (buffer: Buffer) => stdoutBuffers.push(buffer));
       child.stderr.on("data", (buffer: Buffer) => stderrBuffers.push(buffer));
 
-      child.on("error", (error) => reject(new Error(`Failed to run oxlint: ${error.message}`)));
+      child.on("error", (error) =>
+        reject(new Error(`Failed to run oxlint: ${error.message}`)),
+      );
       child.on("close", () => {
         const output = Buffer.concat(stdoutBuffers).toString("utf-8").trim();
         if (!output) {
-          const stderrOutput = Buffer.concat(stderrBuffers).toString("utf-8").trim();
+          const stderrOutput = Buffer.concat(stderrBuffers)
+            .toString("utf-8")
+            .trim();
           if (stderrOutput) {
             reject(new Error(`Failed to run oxlint: ${stderrOutput}`));
             return;
@@ -323,12 +458,20 @@ export const runOxlint = async (
     }
 
     return output.diagnostics
-      .filter((diagnostic) => diagnostic.code && JSX_FILE_PATTERN.test(diagnostic.filename))
+      .filter(
+        (diagnostic) =>
+          diagnostic.code && JSX_FILE_PATTERN.test(diagnostic.filename),
+      )
       .map((diagnostic) => {
         const { plugin, rule } = parseRuleCode(diagnostic.code);
         const primaryLabel = diagnostic.labels[0];
 
-        const cleaned = cleanDiagnosticMessage(diagnostic.message, diagnostic.help, plugin, rule);
+        const cleaned = cleanDiagnosticMessage(
+          diagnostic.message,
+          diagnostic.help,
+          plugin,
+          rule,
+        );
 
         return {
           filePath: diagnostic.filename,
