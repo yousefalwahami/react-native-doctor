@@ -11,13 +11,13 @@ Scans your React Native and Expo codebase for performance, accessibility, archit
 ## Usage
 
 ```bash
-npx -y react-native-doctor@latest . --verbose
+npx -y react-native-doc@latest . --verbose
 ```
 
 For Expo projects:
 
 ```bash
-npx -y react-native-doctor@latest . --verbose --expo-only
+npx -y react-native-doc@latest . --verbose --expo-only
 ```
 
 ## Workflow
@@ -27,13 +27,14 @@ npx -y react-native-doctor@latest . --verbose --expo-only
 3. Fix issues starting with errors (highest severity)
 4. Re-run to verify the score improved
 
-## Rules (75+)
+## Rules (70+)
 
 ### React Native
 
 - **Correctness**: raw text outside `<Text>`, deprecated modules, removed APIs (`Dimensions.get`)
-- **Performance**: inline `renderItem` functions, missing `keyExtractor`, `ScrollView` for long lists, inline style objects, anonymous JSX callbacks, heavy array chains in render
-- **Architecture**: `StyleSheet` vs inline styles, missing `React.memo` on list items, single-element style arrays
+- **Performance**: inline `renderItem` functions, missing `keyExtractor`, `ScrollView` for long lists, inline style objects, anonymous JSX callbacks, heavy array chains in render, single-element style arrays, missing `React.memo` on list items, `Animated` API (prefer `react-native-reanimated`)
+- **Architecture**: legacy shadow properties, hardcoded screen dimensions instead of `useWindowDimensions()`, excessive `Platform.OS` branching, hardcoded colors, prop drilling, god components, unnecessary `useEffect` for derived state
+- **Images**: missing explicit width/height on `<Image>`
 
 ### Accessibility
 
@@ -42,15 +43,6 @@ npx -y react-native-doctor@latest . --verbose --expo-only
 - Non-descriptive labels ("button", "tap here", etc.)
 - Images without `accessible` + `accessibilityLabel`
 - Small tap targets without `hitSlop` (< 44pt)
-
-### Architecture
-
-- Hardcoded hex/rgb colors instead of theme tokens
-- Excessive `Platform.OS` branching (use platform files)
-- Hardcoded screen dimensions instead of `useWindowDimensions()`
-- Prop drilling via `{...props}` / `{...rest}` spread
-- God components (>300 lines, many `useState`/`useEffect`)
-- Unnecessary `useEffect` for derived state
 
 ### Navigation (React Navigation)
 
@@ -65,12 +57,12 @@ npx -y react-native-doctor@latest . --verbose --expo-only
 - Hardcoded API keys in source code
 - Missing `app/+not-found.tsx` for Expo Router
 
-### Shared React rules
+### React (applies to all projects)
 
 - **Security**: `eval()`, secrets in client bundle
-- **State & Effects**: derived state in `useEffect`, cascading `setState`, missing deps, `fetch` in effects
-- **Architecture**: nested component definitions, giant components
-- **Performance**: missing `useMemo`, layout property animations, `transition: all`
+- **State & Effects**: derived state in `useEffect`, cascading `setState`, missing deps, `fetch` in effects, unnecessary `useEffect` for derived state
+- **Architecture**: nested component definitions, giant components (>200 lines)
+- **Performance**: missing `useMemo`/`useCallback`, non-lazy state init, inline objects to memoized components
 - **Bundle Size**: barrel imports, full lodash, `moment.js`
 - **Dead Code**: unused files, exports, types
 
@@ -79,3 +71,21 @@ npx -y react-native-doctor@latest . --verbose --expo-only
 - **75+**: Great
 - **50–74**: Needs work
 - **0–49**: Critical
+
+## Fix with an AI agent
+
+After scanning, hand off to an agent to fix all issues automatically.
+
+### Ami
+
+```bash
+npx -y react-native-doc@latest . --fix
+```
+
+### Cline
+
+```bash
+npx -y react-native-doc@latest . --cline
+```
+
+If the `cline` CLI is installed (`npm install -g cline`), runs it directly. Otherwise copies the fix prompt to clipboard and opens VS Code/Cline extension.

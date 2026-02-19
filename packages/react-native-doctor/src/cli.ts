@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execSync, spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -29,6 +29,7 @@ interface CliFlags {
   verbose: boolean;
   score: boolean;
   fix: boolean;
+  cline: boolean;
   prompt: boolean;
   yes: boolean;
   project?: string;
@@ -89,6 +90,7 @@ const program = new Command()
   )
   .option("--diff [base]", "scan only files changed vs base branch")
   .option("--fix", "open Ami to auto-fix all issues")
+  .option("--cline", "copy fix prompt to clipboard and open VS Code/Cline")
   .option("--prompt", "copy latest scan output to clipboard")
   .option("--expo-only", "force-enable Expo rules even if expo is not detected")
   .option(
@@ -140,6 +142,7 @@ const program = new Command()
         process.env.OPENCODE,
         process.env.AMP_HOME,
         process.env.AMI,
+        process.env.CLINE,
       ].some(Boolean);
       const shouldSkipPrompts =
         flags.yes || isAutomatedEnvironment || !process.stdin.isTTY;
@@ -209,10 +212,14 @@ const program = new Command()
         openAmiToFix(resolvedDirectory);
       }
 
+      if (flags.cline) {
+        openClineToFix(resolvedDirectory);
+      }
+
       if (!isScoreOnly && !flags.prompt) {
         await maybePromptSkillInstall(shouldSkipPrompts);
-        if (!shouldSkipPrompts && !flags.fix) {
-          await maybePromptAmiFix(resolvedDirectory);
+        if (!shouldSkipPrompts && !flags.fix && !flags.cline) {
+          await maybePromptAgentFix(resolvedDirectory);
         }
       }
     } catch (error) {
@@ -234,6 +241,8 @@ ${highlighter.dim("Learn more:")}
 
 const AMI_INSTALL_URL = "https://ami.dev/install.sh";
 const AMI_RELEASES_URL = "https://github.com/millionco/ami-releases/releases";
+const CLINE_EXTENSION_ID = "saoudrizwan.claude-dev";
+const CLINE_INSTALL_URL = "https://cline.bot";
 const DEEPLINK_FIX_PROMPT =
   "Run `npx -y react-native-doc@latest .` to diagnose issues, then fix all reported issues one by one. After applying fixes, run it again to verify the results improved.";
 const CLIPBOARD_FIX_PROMPT =
@@ -265,6 +274,30 @@ const isAmiInstalled = (): boolean => {
   try {
     execSync("which ami", { stdio: "ignore" });
     return true;
+  } catch {
+    return false;
+  }
+};
+
+const isClineCliInstalled = (): boolean => {
+  try {
+    execSync(process.platform === "win32" ? "where cline" : "which cline", {
+      stdio: "ignore",
+    });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const isClineInstalled = (): boolean => {
+  if (isClineCliInstalled()) return true;
+  try {
+    const output = execSync("code --list-extensions", {
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"],
+    });
+    return output.includes(CLINE_EXTENSION_ID);
   } catch {
     return false;
   }
@@ -333,6 +366,36 @@ const openAmiToFix = (directory: string): void => {
   }
 };
 
+const openClineToFix = (directory: string): void => {
+  if (isClineCliInstalled()) {
+    logger.log("Running Cline CLI to fix react-native-doc issues...");
+    spawnSync(
+      "cline",
+      ["task", "-y", DEEPLINK_FIX_PROMPT, "-c", path.resolve(directory)],
+      { stdio: "inherit" },
+    );
+    return;
+  }
+
+  // Fall back: clipboard + open VS Code so user can paste into Cline extension
+  const didCopy = copyToClipboard(DEEPLINK_FIX_PROMPT);
+  try {
+    execSync(`code "${path.resolve(directory)}"`, { stdio: "ignore" });
+  } catch {
+    // VS Code not in PATH — user can still paste manually
+  }
+
+  if (didCopy) {
+    logger.success(
+      "Opened VS Code. Prompt copied to clipboard — paste into Cline to fix.",
+    );
+  } else {
+    logger.break();
+    logger.dim("Could not copy to clipboard. Use this prompt in Cline:");
+    logger.info(DEEPLINK_FIX_PROMPT);
+  }
+};
+
 const buildPromptWithOutput = (reactDoctorOutput: string): string => {
   const summaryStartIndex = reactDoctorOutput.indexOf(SCAN_SUMMARY_SEPARATOR);
   const diagnosticsOutput =
@@ -369,37 +432,33 @@ const copyPromptToClipboard = (
   logger.info(promptWithOutput);
 };
 
-const maybePromptAmiFix = async (directory: string): Promise<void> => {
-  const isInstalled = isAmiInstalled();
+const maybePromptAgentFix = async (directory: string): Promise<void> => {
+  const amiInstalled = isAmiInstalled();
+  const clineInstalled = isClineInstalled();
 
   logger.break();
-  logger.log(`Fix these issues with ${highlighter.info("Ami")}?`);
-  logger.dim(
-    "   Ami is a coding agent built to understand your codebase and fix issues",
-  );
-  logger.dim(
-    `   automatically. Learn more at ${highlighter.info("https://ami.dev")}`,
-  );
+  logger.log(`Fix these issues with an ${highlighter.info("AI agent")}?`);
   logger.break();
 
-  if (!isInstalled && process.platform !== "darwin") {
-    logger.dim(`Download Ami at ${highlighter.info(AMI_RELEASES_URL)}`);
-    return;
-  }
-
-  const promptMessage = isInstalled
-    ? "Open Ami to fix?"
-    : "Install Ami to fix?";
-  const { shouldFix } = await prompts({
-    type: "confirm",
-    name: "shouldFix",
-    message: promptMessage,
-    initial: true,
+  const { agent } = await prompts({
+    type: "select",
+    name: "agent",
+    message: "Choose agent:",
+    choices: [
+      {
+        title: amiInstalled ? "Ami" : `Ami (not installed — ${AMI_RELEASES_URL})`,
+        value: "ami",
+      },
+      {
+        title: clineInstalled ? "Cline" : `Cline (not installed — ${CLINE_INSTALL_URL})`,
+        value: "cline",
+      },
+      { title: "Skip", value: "skip" },
+    ],
   });
 
-  if (shouldFix) {
-    openAmiToFix(directory);
-  }
+  if (agent === "ami") openAmiToFix(directory);
+  else if (agent === "cline") openClineToFix(directory);
 };
 
 const fixAction = (directory: string) => {
@@ -420,8 +479,20 @@ const installAmiCommand = new Command("install-ami")
   .argument("[directory]", "project directory", ".")
   .action(fixAction);
 
+const fixClineCommand = new Command("fix-cline")
+  .description("Copy fix prompt to clipboard and open VS Code/Cline")
+  .argument("[directory]", "project directory", ".")
+  .action((directory: string) => {
+    try {
+      openClineToFix(directory);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
 program.addCommand(fixCommand);
 program.addCommand(installAmiCommand);
+program.addCommand(fixClineCommand);
 
 const main = async () => {
   maybeInstallGlobally();

@@ -31,20 +31,53 @@ npx -y react-native-doc@latest . -y
 ## Options
 
 ```
-Usage: react-native-doc [directory] [options]
+Usage: react-native-doc [options] [command] [directory]
+
+Arguments:
+  directory              project directory to scan (default: ".")
 
 Options:
-  -v, --version      display the version number
-  --no-lint          skip linting
-  --no-dead-code     skip dead code detection
-  --verbose          show file details per rule
-  --score            output only the score
-  -y, --yes          skip prompts, scan all workspace projects
-  --project <name>   select workspace project (comma-separated for multiple)
-  --diff [base]      scan only files changed vs base branch
-  --expo-only        force-enable Expo rules even if expo is not detected
-  --rn-only          force-enable React Native rules even if react-native is not detected
-  --fix              open Ami to auto-fix all issues
-  --prompt           copy latest scan output to clipboard
-  -h, --help         display help for command
+  -v, --version          display the version number
+  --no-lint              skip linting
+  --no-dead-code         skip dead code detection
+  --verbose              show file details per rule
+  --score                output only the score
+  -y, --yes              skip prompts, scan all workspace projects
+  --project <name>       select workspace project (comma-separated for multiple)
+  --diff [base]          scan only files changed vs base branch
+  --fix                  open Ami to auto-fix all issues
+  --cline                run Cline CLI (or copy prompt to clipboard for VS Code/Cline extension)
+  --prompt               copy latest scan output to clipboard
+  --expo-only            force-enable Expo rules even if expo is not detected
+  --rn-only              force-enable React Native rules even if react-native is not detected
+  -h, --help             display help for command
+
+Commands:
+  fix [directory]        Open Ami to auto-fix react-native-doc issues
+  install-ami            Install Ami and open it to auto-fix issues
+  fix-cline [directory]  Run Cline CLI to fix issues (or copy prompt for VS Code/Cline extension)
 ```
+
+## Fixing issues with AI agents
+
+After a scan, react-native-doc can hand off to an AI coding agent to fix all reported issues automatically.
+
+### Ami
+
+```bash
+npx -y react-native-doc@latest . --fix
+# or
+npx -y react-native-doc@latest . fix
+```
+
+Opens [Ami](https://ami.dev) with a pre-filled fix prompt and auto-submit enabled.
+
+### Cline
+
+```bash
+npx -y react-native-doc@latest . --cline
+# or
+npx -y react-native-doc@latest . fix-cline
+```
+
+If the `cline` CLI is installed (`npm install -g cline`), runs `cline task -y` directly in the terminal with the fix prompt and working directory set. Otherwise falls back to copying the fix prompt to clipboard and opening VS Code so it can be pasted into the Cline extension.
