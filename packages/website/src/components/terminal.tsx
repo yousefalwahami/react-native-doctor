@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Copy, Check, ChevronRight, RotateCcw } from "lucide-react";
 
 const COPIED_RESET_DELAY_MS = 2000;
@@ -310,6 +310,11 @@ const Terminal = () => {
   const [state, setState] = useState<AnimationState>(
     didAnimationComplete() ? COMPLETED_STATE : INITIAL_STATE,
   );
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [state]);
 
   useEffect(() => {
     if (didAnimationComplete()) return;
@@ -371,7 +376,7 @@ const Terminal = () => {
   }, []);
 
   return (
-    <div className="mx-auto min-h-screen w-full max-w-3xl bg-[#0a0a0a] p-6 pb-32 font-mono text-base leading-relaxed text-neutral-300 sm:p-8 sm:pb-40 sm:text-lg">
+    <div className="mx-auto min-h-screen w-full max-w-3xl bg-[#0a0a0a] p-6 pb-32 font-mono text-base leading-relaxed text-neutral-300 sm:p-8 sm:pb-8 sm:text-lg">
       <div>
         <span className="text-neutral-500">$ </span>
         <span>{state.typedCommand}</span>
@@ -494,6 +499,7 @@ const Terminal = () => {
           </button>
         </div>
       )}
+      <div ref={bottomRef} />
     </div>
   );
 };
