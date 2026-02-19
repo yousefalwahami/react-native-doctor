@@ -2,8 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import type { ReactDoctorConfig } from "../types.js";
 
-const CONFIG_FILENAME = "react-doctor.config.json";
-const PACKAGE_JSON_CONFIG_KEY = "reactDoctor";
+const CONFIG_FILENAME = "react-native-doctor.config.json";
+const PACKAGE_JSON_CONFIG_KEY = "reactNativeDoctor";
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -16,13 +16,17 @@ export const loadConfig = (rootDirectory: string): ReactDoctorConfig | null => {
       const fileContent = fs.readFileSync(configFilePath, "utf-8");
       const parsed: unknown = JSON.parse(fileContent);
       if (!isPlainObject(parsed)) {
-        console.warn(`Warning: ${CONFIG_FILENAME} must be a JSON object, ignoring.`);
+        console.warn(
+          `Warning: ${CONFIG_FILENAME} must be a JSON object, ignoring.`,
+        );
         return null;
       }
       return parsed as ReactDoctorConfig;
     } catch (error) {
       console.warn(
-        `Warning: Failed to parse ${CONFIG_FILENAME}: ${error instanceof Error ? error.message : String(error)}`,
+        `Warning: Failed to parse ${CONFIG_FILENAME}: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
       );
       return null;
     }

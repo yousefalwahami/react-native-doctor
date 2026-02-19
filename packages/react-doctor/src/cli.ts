@@ -319,11 +319,11 @@ const openAmiToFix = (directory: string): void => {
     return;
   }
 
-  logger.log("Opening Ami to fix react-doctor issues...");
+  logger.log("Opening Ami to fix react-native-doctor issues...");
 
   try {
     openUrl(deeplink);
-    logger.success("Opened Ami with react-doctor fix prompt.");
+    logger.success("Opened Ami with react-native-doctor fix prompt.");
   } catch {
     logger.break();
     logger.dim("Could not open Ami automatically. Open this URL manually:");
@@ -409,7 +409,7 @@ const fixAction = (directory: string) => {
 };
 
 const fixCommand = new Command("fix")
-  .description("Open Ami to auto-fix react-doctor issues")
+  .description("Open Ami to auto-fix react-native-doctor issues")
   .argument("[directory]", "project directory", ".")
   .action(fixAction);
 

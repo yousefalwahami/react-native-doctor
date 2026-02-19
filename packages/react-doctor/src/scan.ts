@@ -492,7 +492,7 @@ export const scan = async (
     }
 
     if (userConfig) {
-      completeStep(`Loaded ${highlighter.info("react-doctor config")}.`);
+      completeStep(`Loaded ${highlighter.info("react-native-doctor config")}.`);
     }
 
     logger.break();

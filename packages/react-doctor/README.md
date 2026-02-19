@@ -115,7 +115,7 @@ Rules are automatically enabled based on your project dependencies (`react-nativ
 
 ## Configuration
 
-Create a `react-doctor.config.json` in your project root to customize behavior:
+Create a `react-native-doctor.config.json` in your project root to customize behavior:
 
 ```json
 {
@@ -126,11 +126,11 @@ Create a `react-doctor.config.json` in your project root to customize behavior:
 }
 ```
 
-You can also use the `"reactDoctor"` key in your `package.json` instead:
+You can also use the `"reactNativeDoctor"` key in your `package.json` instead:
 
 ```json
 {
-  "reactDoctor": {
+  "reactNativeDoctor": {
     "ignore": {
       "rules": ["react/no-danger"]
     }
