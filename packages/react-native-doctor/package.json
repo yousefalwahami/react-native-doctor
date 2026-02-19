@@ -1,5 +1,5 @@
 {
-  "name": "react-native-doctor",
+  "name": "react-native-doc",
   "version": "0.0.1",
   "description": "Diagnose and fix performance, accessibility, and architecture issues in your React Native & Expo app",
   "keywords": [
@@ -21,7 +21,7 @@
     "directory": "packages/react-native-doctor"
   },
   "bin": {
-    "react-native-doctor": "./dist/cli.js"
+    "react-native-doc": "./dist/cli.js"
   },
   "files": [
     "dist"

@@ -7,31 +7,31 @@ Diagnose React Native & Expo codebase health. Scans for security, performance, c
 Run this at your project root:
 
 ```bash
-npx -y react-native-doctor@latest .
+npx -y react-native-doc@latest .
 ```
 
 Use `--verbose` to see affected files and line numbers:
 
 ```bash
-npx -y react-native-doctor@latest . --verbose
+npx -y react-native-doc@latest . --verbose
 ```
 
 Use `--score` to output only the numeric score:
 
 ```bash
-npx -y react-native-doctor@latest . --score
+npx -y react-native-doc@latest . --score
 ```
 
 Use `-y` to skip prompts (required for non-interactive environments like CI or coding agents):
 
 ```bash
-npx -y react-native-doctor@latest . -y
+npx -y react-native-doc@latest . -y
 ```
 
 ## Options
 
 ```
-Usage: react-native-doctor [directory] [options]
+Usage: react-native-doc [directory] [options]
 
 Options:
   -v, --version      display the version number

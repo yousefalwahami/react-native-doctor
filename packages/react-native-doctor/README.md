@@ -1,6 +1,6 @@
-# react-native-doctor
+# react-native-doc
 
-[![version](https://img.shields.io/npm/v/react-native-doctor?style=flat&colorA=000000&colorB=000000)](https://npmjs.com/package/react-native-doctor)
+[![version](https://img.shields.io/npm/v/react-native-doc?style=flat&colorA=000000&colorB=000000)](https://npmjs.com/package/react-native-doc)
 
 Diagnose and fix performance, accessibility, and architecture issues in your React Native & Expo app.
 
@@ -11,18 +11,18 @@ One command scans your codebase across **75+ rules** and outputs a **0–100 sco
 Run this at your project root:
 
 ```bash
-npx -y react-native-doctor@latest .
+npx -y react-native-doc@latest .
 ```
 
 Use `--verbose` to see affected files and line numbers:
 
 ```bash
-npx -y react-native-doctor@latest . --verbose
+npx -y react-native-doc@latest . --verbose
 ```
 
 ## Install as a skill
 
-Add react-native-doctor's rules as a [skill](https://skills.sh) for your coding agent:
+Add react-native-doc's rules as a [skill](https://skills.sh) for your coding agent:
 
 ```bash
 npx skills add yousefalwahami/react-native-doctor
@@ -33,7 +33,7 @@ This gives agents like Cursor, Claude Code, Copilot, and others access to all 75
 ## Options
 
 ```
-Usage: react-native-doctor [directory] [options]
+Usage: react-native-doc [directory] [options]
 
 Options:
   -v, --version      display the version number

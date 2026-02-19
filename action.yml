@@ -49,12 +49,12 @@ runs:
         if [ -n "$INPUT_PROJECT" ]; then FLAGS="$FLAGS --project $INPUT_PROJECT"; fi
         if [ "$INPUT_RN_ONLY" = "true" ]; then FLAGS="$FLAGS --rn-only"; fi
         if [ "$INPUT_EXPO_ONLY" = "true" ]; then FLAGS="$FLAGS --expo-only"; fi
-        npx -y react-native-doctor@latest "$INPUT_DIRECTORY" $FLAGS
+        npx -y react-native-doc@latest "$INPUT_DIRECTORY" $FLAGS
 
     - id: score
       shell: bash
       env:
         INPUT_DIRECTORY: ${{ inputs.directory }}
       run: |
-        SCORE=$(npx -y react-native-doctor@latest "$INPUT_DIRECTORY" --score 2>/dev/null || echo "")
+        SCORE=$(npx -y react-native-doc@latest "$INPUT_DIRECTORY" --score 2>/dev/null || echo "")
         echo "score=$SCORE" >> "$GITHUB_OUTPUT"

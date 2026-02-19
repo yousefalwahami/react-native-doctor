@@ -10,9 +10,9 @@
     "url": "https://github.com/yousefalwahami/react-native-doctor.git"
   },
   "scripts": {
-    "dev": "pnpm --filter react-native-doctor run dev",
-    "build": "pnpm --filter react-native-doctor run build",
-    "test": "pnpm --filter react-native-doctor run test",
+    "dev": "pnpm --filter react-native-doc run dev",
+    "build": "pnpm --filter react-native-doc run build",
+    "test": "pnpm --filter react-native-doc run test",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "oxfmt",

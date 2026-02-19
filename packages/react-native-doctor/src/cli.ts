@@ -74,7 +74,7 @@ const resolveDiffMode = async (
 };
 
 const program = new Command()
-  .name("react-native-doctor")
+  .name("react-native-doc")
   .description("Diagnose React Native & Expo codebase health")
   .version(VERSION, "-v, --version", "display the version number")
   .argument("[directory]", "project directory to scan", ".")
@@ -108,7 +108,7 @@ const program = new Command()
       const userConfig = loadConfig(resolvedDirectory);
 
       if (!isScoreOnly) {
-        logger.log(`react-native-doctor v${VERSION}`);
+        logger.log(`react-native-doc v${VERSION}`);
         logger.break();
       }
 
@@ -118,15 +118,15 @@ const program = new Command()
       const scanOptions: ScanOptions = {
         lint: isCliOverride("lint")
           ? flags.lint
-          : (userConfig?.lint ?? flags.lint),
+          : userConfig?.lint ?? flags.lint,
         deadCode: isCliOverride("deadCode")
           ? flags.deadCode
-          : (userConfig?.deadCode ?? flags.deadCode),
+          : userConfig?.deadCode ?? flags.deadCode,
         verbose:
           flags.prompt ||
           (isCliOverride("verbose")
             ? Boolean(flags.verbose)
-            : (userConfig?.verbose ?? false)),
+            : userConfig?.verbose ?? false),
         scoreOnly: isScoreOnly,
         expoOnly: flags.expoOnly,
         rnOnly: flags.rnOnly,
@@ -164,7 +164,9 @@ const program = new Command()
 
       if (isDiffMode && diffInfo && !isScoreOnly) {
         logger.log(
-          `Scanning changes: ${highlighter.info(diffInfo.currentBranch)} → ${highlighter.info(diffInfo.baseBranch)}`,
+          `Scanning changes: ${highlighter.info(
+            diffInfo.currentBranch,
+          )} → ${highlighter.info(diffInfo.baseBranch)}`,
         );
         logger.break();
       }
@@ -233,10 +235,10 @@ ${highlighter.dim("Learn more:")}
 const AMI_INSTALL_URL = "https://ami.dev/install.sh";
 const AMI_RELEASES_URL = "https://github.com/millionco/ami-releases/releases";
 const DEEPLINK_FIX_PROMPT =
-  "Run `npx -y react-native-doctor@latest .` to diagnose issues, then fix all reported issues one by one. After applying fixes, run it again to verify the results improved.";
+  "Run `npx -y react-native-doc@latest .` to diagnose issues, then fix all reported issues one by one. After applying fixes, run it again to verify the results improved.";
 const CLIPBOARD_FIX_PROMPT =
-  "Fix all issues reported in the react-native-doctor diagnostics below, one by one. After applying fixes, run `npx -y react-native-doctor@latest .` again to verify the results improved.";
-const REACT_DOCTOR_OUTPUT_LABEL = "react-native-doctor output";
+  "Fix all issues reported in the react-native-doc diagnostics below, one by one. After applying fixes, run `npx -y react-native-doc@latest .` again to verify the results improved.";
+const REACT_DOCTOR_OUTPUT_LABEL = "react-native-doc output";
 const SCAN_SUMMARY_SEPARATOR = "─".repeat(SEPARATOR_LENGTH_CHARS);
 
 const isAmiInstalled = (): boolean => {
@@ -252,7 +254,7 @@ const isAmiInstalled = (): boolean => {
     return (
       Boolean(
         LOCALAPPDATA &&
-        existsSync(path.join(LOCALAPPDATA, "Programs", "Ami", "Ami.exe")),
+          existsSync(path.join(LOCALAPPDATA, "Programs", "Ami", "Ami.exe")),
       ) ||
       Boolean(
         PROGRAMFILES && existsSync(path.join(PROGRAMFILES, "Ami", "Ami.exe")),
@@ -319,11 +321,11 @@ const openAmiToFix = (directory: string): void => {
     return;
   }
 
-  logger.log("Opening Ami to fix react-native-doctor issues...");
+  logger.log("Opening Ami to fix react-native-doc issues...");
 
   try {
     openUrl(deeplink);
-    logger.success("Opened Ami with react-native-doctor fix prompt.");
+    logger.success("Opened Ami with react-native-doc fix prompt.");
   } catch {
     logger.break();
     logger.dim("Could not open Ami automatically. Open this URL manually:");
@@ -409,7 +411,7 @@ const fixAction = (directory: string) => {
 };
 
 const fixCommand = new Command("fix")
-  .description("Open Ami to auto-fix react-native-doctor issues")
+  .description("Open Ami to auto-fix react-native-doc issues")
   .argument("[directory]", "project directory", ".")
   .action(fixAction);
 
