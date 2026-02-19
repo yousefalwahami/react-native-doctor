@@ -20,7 +20,9 @@ vi.mock("ora", () => ({
   }),
 }));
 
-const noReactTempDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "react-doctor-test-"));
+const noReactTempDirectory = fs.mkdtempSync(
+  path.join(os.tmpdir(), "react-native-doc-test-"),
+);
 fs.writeFileSync(
   path.join(noReactTempDirectory, "package.json"),
   JSON.stringify({ name: "no-react", dependencies: {} }),
@@ -46,9 +48,9 @@ describe("scan", () => {
   it("throws when React dependency is missing", async () => {
     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     try {
-      await expect(scan(noReactTempDirectory, { lint: true, deadCode: false })).rejects.toThrow(
-        "No React dependency found",
-      );
+      await expect(
+        scan(noReactTempDirectory, { lint: true, deadCode: false }),
+      ).rejects.toThrow("No React dependency found");
     } finally {
       consoleSpy.mockRestore();
     }

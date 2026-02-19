@@ -26,7 +26,10 @@ describe("filterIgnoredDiagnostics", () => {
     const diagnostics = [
       createDiagnostic({ plugin: "react", rule: "no-danger" }),
       createDiagnostic({ plugin: "jsx-a11y", rule: "no-autofocus" }),
-      createDiagnostic({ plugin: "react-doctor", rule: "no-giant-component" }),
+      createDiagnostic({
+        plugin: "react-native-doctor",
+        rule: "no-giant-component",
+      }),
     ];
     const config: ReactDoctorConfig = {
       ignore: {
@@ -58,10 +61,18 @@ describe("filterIgnoredDiagnostics", () => {
 
   it("filters by both rules and files together", () => {
     const diagnostics = [
-      createDiagnostic({ plugin: "react", rule: "no-danger", filePath: "src/app.tsx" }),
-      createDiagnostic({ plugin: "knip", rule: "exports", filePath: "src/generated/api.tsx" }),
       createDiagnostic({
-        plugin: "react-doctor",
+        plugin: "react",
+        rule: "no-danger",
+        filePath: "src/app.tsx",
+      }),
+      createDiagnostic({
+        plugin: "knip",
+        rule: "exports",
+        filePath: "src/generated/api.tsx",
+      }),
+      createDiagnostic({
+        plugin: "react-native-doctor",
         rule: "no-giant-component",
         filePath: "src/components/App.tsx",
       }),

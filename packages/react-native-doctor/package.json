@@ -1,6 +1,6 @@
 {
   "name": "react-native-doc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Diagnose and fix performance, accessibility, and architecture issues in your React Native & Expo app",
   "keywords": [
     "diagnostics",

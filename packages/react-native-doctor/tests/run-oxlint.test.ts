@@ -5,10 +5,13 @@ import { runOxlint } from "../src/utils/run-oxlint.js";
 
 const FIXTURES_DIRECTORY = path.resolve(import.meta.dirname, "fixtures");
 const BASIC_REACT_DIRECTORY = path.join(FIXTURES_DIRECTORY, "basic-react");
-const NEXTJS_APP_DIRECTORY = path.join(FIXTURES_DIRECTORY, "nextjs-app");
+const RN_APP_DIRECTORY = path.join(FIXTURES_DIRECTORY, "react-native-app");
+const EXPO_APP_DIRECTORY = path.join(FIXTURES_DIRECTORY, "expo-app");
 
-const findDiagnosticsByRule = (diagnostics: Diagnostic[], rule: string): Diagnostic[] =>
-  diagnostics.filter((diagnostic) => diagnostic.rule === rule);
+const findDiagnosticsByRule = (
+  diagnostics: Diagnostic[],
+  rule: string,
+): Diagnostic[] => diagnostics.filter((diagnostic) => diagnostic.rule === rule);
 
 interface RuleTestCase {
   fixture: string;
@@ -27,25 +30,54 @@ const describeRules = (
       it(`${ruleName} (${testCase.fixture} → ${testCase.ruleSource})`, () => {
         const issues = findDiagnosticsByRule(getDiagnostics(), ruleName);
         expect(issues.length).toBeGreaterThan(0);
-        if (testCase.severity) expect(issues[0].severity).toBe(testCase.severity);
-        if (testCase.category) expect(issues[0].category).toBe(testCase.category);
+        if (testCase.severity)
+          expect(issues[0].severity).toBe(testCase.severity);
+        if (testCase.category)
+          expect(issues[0].category).toBe(testCase.category);
       });
     }
   });
 };
 
 let basicReactDiagnostics: Diagnostic[];
-let nextjsDiagnostics: Diagnostic[];
+let rnDiagnostics: Diagnostic[];
+let expoDiagnostics: Diagnostic[];
 
 describe("runOxlint", () => {
   it("loads basic-react diagnostics", async () => {
-    basicReactDiagnostics = await runOxlint(BASIC_REACT_DIRECTORY, true, "unknown", false);
+    basicReactDiagnostics = await runOxlint(
+      BASIC_REACT_DIRECTORY,
+      true,
+      "unknown",
+      false,
+      false,
+      false,
+    );
     expect(basicReactDiagnostics.length).toBeGreaterThan(0);
   });
 
-  it("loads nextjs diagnostics", async () => {
-    nextjsDiagnostics = await runOxlint(NEXTJS_APP_DIRECTORY, true, "nextjs", false);
-    expect(nextjsDiagnostics.length).toBeGreaterThan(0);
+  it("loads react-native diagnostics", async () => {
+    rnDiagnostics = await runOxlint(
+      RN_APP_DIRECTORY,
+      true,
+      "unknown",
+      false,
+      true,
+      false,
+    );
+    expect(rnDiagnostics.length).toBeGreaterThan(0);
+  });
+
+  it("loads expo diagnostics", async () => {
+    expoDiagnostics = await runOxlint(
+      EXPO_APP_DIRECTORY,
+      true,
+      "unknown",
+      false,
+      true,
+      true,
+    );
+    expect(expoDiagnostics.length).toBeGreaterThan(0);
   });
 
   it("returns diagnostics with required fields", () => {
@@ -273,87 +305,111 @@ describe("runOxlint", () => {
   );
 
   describeRules(
-    "nextjs rules",
+    "react native rules",
     {
-      "nextjs-no-img-element": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
-        category: "Next.js",
-      },
-      "nextjs-async-client-component": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
+      "rn-no-deprecated-modules": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/react-native.ts",
         severity: "error",
       },
-      "nextjs-no-a-element": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
+      "rn-prefer-reanimated": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/react-native.ts",
+        severity: "warning",
       },
-      "nextjs-no-use-search-params-without-suspense": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
+      "rn-no-dimensions-get": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/react-native.ts",
+        severity: "warning",
       },
-      "nextjs-no-client-fetch-for-server-data": {
-        fixture: "app/layout.tsx",
-        ruleSource: "rules/nextjs.ts",
-      },
-      "nextjs-missing-metadata": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
-      },
-      "nextjs-no-client-side-redirect": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
-      },
-      "nextjs-no-redirect-in-try-catch": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
-      },
-      "nextjs-image-missing-sizes": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
-      },
-      "nextjs-no-native-script": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
-      },
-      "nextjs-inline-script-missing-id": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
-      },
-      "nextjs-no-font-link": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
-      },
-      "nextjs-no-css-link": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
-      },
-      "nextjs-no-polyfill-script": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
-      },
-      "nextjs-no-head-import": {
-        fixture: "app/page.tsx",
-        ruleSource: "rules/nextjs.ts",
+      "rn-touchable-missing-accessibility-label": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/rn-accessibility.ts",
         severity: "error",
       },
-      "nextjs-no-side-effect-in-get-handler": {
-        fixture: "app/logout/route.tsx",
-        ruleSource: "rules/nextjs.ts",
-        severity: "error",
+      "rn-missing-accessibility-role": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/rn-accessibility.ts",
+        severity: "warning",
       },
-      "server-auth-actions": {
-        fixture: "app/actions.tsx",
-        ruleSource: "rules/server.ts",
-        severity: "error",
-        category: "Server",
+      "rn-image-missing-accessible": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/rn-accessibility.ts",
+        severity: "warning",
       },
-      "server-after-nonblocking": {
-        fixture: "app/actions.tsx",
-        ruleSource: "rules/server.ts",
+      "rn-image-missing-dimensions": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/react-native.ts",
+        severity: "warning",
+      },
+      "rn-inline-style-in-render": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/react-native.ts",
+        severity: "warning",
+      },
+      "rn-no-inline-flatlist-renderitem": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/react-native.ts",
+        severity: "warning",
+      },
+      "rn-flatlist-missing-keyextractor": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/react-native.ts",
+        severity: "warning",
+      },
+      "rn-scrollview-for-long-lists": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/react-native.ts",
+        severity: "warning",
+      },
+      "rn-avoid-anonymous-functions-in-jsx": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/rn-architecture.ts",
+        severity: "warning",
+      },
+      "rn-missing-memo-on-list-item": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/react-native.ts",
+        severity: "warning",
+      },
+      "rn-hardcoded-colors": {
+        fixture: "rn-issues.tsx",
+        ruleSource: "rules/rn-architecture.ts",
+        severity: "warning",
       },
     },
-    () => nextjsDiagnostics,
+    () => rnDiagnostics,
+  );
+
+  describeRules(
+    "expo rules",
+    {
+      "rn-no-legacy-expo-packages": {
+        fixture: "expo-issues.tsx",
+        ruleSource: "rules/react-native.ts",
+        severity: "warning",
+      },
+      "expo-constants-misuse": {
+        fixture: "expo-issues.tsx",
+        ruleSource: "rules/rn-expo.ts",
+        severity: "warning",
+      },
+      "expo-missing-dark-mode-support": {
+        fixture: "expo-issues.tsx",
+        ruleSource: "rules/rn-expo.ts",
+        severity: "warning",
+      },
+      "expo-router-layout-missing-error-boundary": {
+        fixture: "src/app/_layout.tsx",
+        ruleSource: "rules/rn-expo.ts",
+        severity: "warning",
+      },
+      "expo-router-missing-not-found": {
+        fixture: "src/app/index.tsx",
+        ruleSource: "rules/rn-expo.ts",
+        severity: "warning",
+      },
+    },
+    () => expoDiagnostics,
   );
 });

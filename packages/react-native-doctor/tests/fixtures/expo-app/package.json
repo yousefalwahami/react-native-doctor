@@ -1,0 +1,10 @@
+{
+  "name": "test-expo-app",
+  "private": true,
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-native": "0.73.0",
+    "expo": "~52.0.0",
+    "expo-router": "~4.0.0"
+  }
+}

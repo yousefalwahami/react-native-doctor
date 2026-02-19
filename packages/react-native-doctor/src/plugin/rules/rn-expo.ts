@@ -151,7 +151,7 @@ export const expoHardcodedApiKeys: Rule = {
 
 export const expoRouterMissingNotFound: Rule = {
   create: (context: RuleContext) => {
-    const filename = context.getFilename?.() ?? "";
+    const filename = (context.getFilename?.() ?? "").replace(/\\/g, "/");
     const isAppIndex =
       filename.endsWith("app/index.tsx") ||
       filename.endsWith("app/index.jsx") ||
