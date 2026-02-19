@@ -20,9 +20,9 @@ export const SUMMARY_BOX_HORIZONTAL_PADDING_CHARS = 1;
 
 export const SUMMARY_BOX_OUTER_INDENT_CHARS = 2;
 
-export const SCORE_API_URL = "https://www.react.doctor/api/score";
+export const SCORE_API_URL = "https://react-native-doc.vercel.app/api/score";
 
-export const SHARE_BASE_URL = "https://www.react.doctor/share";
+export const SHARE_BASE_URL = "https://react-native-doc.vercel.app/share";
 
 export const GIT_LS_FILES_MAX_BUFFER_BYTES = 50 * 1024 * 1024;
 

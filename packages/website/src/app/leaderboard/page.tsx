@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LEADERBOARD_ENTRIES, type ResolvedLeaderboardEntry } from "./leaderboard-entries";
+import {
+  LEADERBOARD_ENTRIES,
+  type ResolvedLeaderboardEntry,
+} from "./leaderboard-entries";
 
 const PERFECT_SCORE = 100;
 const SCORE_GOOD_THRESHOLD = 75;
 const SCORE_OK_THRESHOLD = 50;
 const SCORE_BAR_WIDTH = 20;
-const COMMAND = "npx -y react-doctor@latest .";
+const COMMAND = "npx -y react-native-doc@latest .";
 const CONTRIBUTE_URL =
-  "https://github.com/millionco/react-doctor/edit/main/packages/website/src/app/leaderboard/leaderboard-entries.ts";
+  "https://github.com/yousefalwahami/react-native-doctor/edit/main/packages/website/src/app/leaderboard/leaderboard-entries.ts";
 
 const getScoreColorClass = (score: number): string => {
   if (score >= SCORE_GOOD_THRESHOLD) return "text-green-400";
@@ -35,7 +38,13 @@ const ScoreBar = ({ score }: { score: number }) => {
   );
 };
 
-const LeaderboardRow = ({ entry, rank }: { entry: ResolvedLeaderboardEntry; rank: number }) => {
+const LeaderboardRow = ({
+  entry,
+  rank,
+}: {
+  entry: ResolvedLeaderboardEntry;
+  rank: number;
+}) => {
   const colorClass = getScoreColorClass(entry.score);
 
   return (
@@ -55,7 +64,10 @@ const LeaderboardRow = ({ entry, rank }: { entry: ResolvedLeaderboardEntry; rank
         <ScoreBar score={entry.score} />
       </span>
 
-      <Link href={entry.shareUrl} className="ml-4 text-right transition-colors hover:underline">
+      <Link
+        href={entry.shareUrl}
+        className="ml-4 text-right transition-colors hover:underline"
+      >
         <span className={`${colorClass} font-medium`}>{entry.score}</span>
         <span className="text-neutral-600">/{PERFECT_SCORE}</span>
       </Link>
@@ -64,8 +76,9 @@ const LeaderboardRow = ({ entry, rank }: { entry: ResolvedLeaderboardEntry; rank
 };
 
 export const metadata: Metadata = {
-  title: "Leaderboard - React Doctor",
-  description: "Scores for popular open-source React projects, diagnosed by React Doctor.",
+  title: "Leaderboard — React Native Doctor",
+  description:
+    "Scores for popular open-source React Native projects, diagnosed by React Native Doctor.",
 };
 
 const LeaderboardPage = () => {
@@ -80,8 +93,13 @@ const LeaderboardPage = () => {
           href="/"
           className="inline-flex items-center gap-2 text-neutral-500 transition-colors hover:text-neutral-300"
         >
-          <img src="/favicon.svg" alt="React Doctor" width={20} height={20} />
-          <span>react-doctor</span>
+          <img
+            src="/favicon.svg"
+            alt="React Native Doctor"
+            width={20}
+            height={20}
+          />
+          <span>react-native-doc</span>
         </Link>
       </div>
 
@@ -92,7 +110,9 @@ const LeaderboardPage = () => {
       </div>
 
       <div className="mb-1 text-xl text-white">Leaderboard</div>
-      <div className="mb-8 text-neutral-500">Scores for popular open-source React projects.</div>
+      <div className="mb-8 text-neutral-500">
+        Scores for popular open-source React Native projects.
+      </div>
 
       <div className="mb-8">
         {LEADERBOARD_ENTRIES.map((entry, index) => (
@@ -104,7 +124,9 @@ const LeaderboardPage = () => {
 
       <div className="text-neutral-500">Run it on your codebase:</div>
       <div className="mt-2">
-        <span className="border border-white/20 px-3 py-1.5 text-white">{COMMAND}</span>
+        <span className="border border-white/20 px-3 py-1.5 text-white">
+          {COMMAND}
+        </span>
       </div>
 
       <div className="min-h-[1.4em]" />
@@ -120,7 +142,9 @@ const LeaderboardPage = () => {
         >
           Add your project
         </a>
-        <span className="text-neutral-600">{" — open a PR to leaderboard-entries.ts"}</span>
+        <span className="text-neutral-600">
+          {" — open a PR to leaderboard-entries.ts"}
+        </span>
       </div>
     </div>
   );

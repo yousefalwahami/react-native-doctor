@@ -33,7 +33,10 @@ This gives agents like Cursor, Claude Code, Copilot, and others access to all 75
 ## Options
 
 ```
-Usage: react-native-doc [directory] [options]
+Usage: react-native-doc [options] [command] [directory]
+
+Arguments:
+  directory          project directory to scan (default: ".")
 
 Options:
   -v, --version      display the version number
@@ -45,10 +48,16 @@ Options:
   --project <name>   select workspace project (comma-separated for multiple)
   --diff [base]      scan only files changed vs base branch
   --fix              open Ami to auto-fix all issues
+  --cline            run Cline CLI to fix issues (or copy prompt for VS Code/Cline extension)
   --prompt           copy latest scan output to clipboard
   --expo-only        force-enable Expo rules even if expo is not detected
   --rn-only          force-enable React Native rules even if react-native is not detected
   -h, --help         display help for command
+
+Commands:
+  fix [directory]    Open Ami to auto-fix issues
+  install-ami        Install Ami and open it to auto-fix issues
+  fix-cline          Run Cline CLI to fix issues (or copy prompt for VS Code/Cline extension)
 ```
 
 ## Rules

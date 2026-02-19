@@ -4,9 +4,9 @@ import AnimatedScore from "./animated-score";
 const PERFECT_SCORE = 100;
 const SCORE_GOOD_THRESHOLD = 75;
 const SCORE_OK_THRESHOLD = 50;
-const COMMAND = "npx -y react-doctor@latest .";
-const FIX_COMMAND = "npx -y react-doctor@latest . --fix";
-const SHARE_BASE_URL = "https://www.react.doctor/share";
+const COMMAND = "npx -y react-native-doc@latest .";
+const FIX_COMMAND = "npx -y react-native-doc@latest . --fix";
+const SHARE_BASE_URL = "https://react-native-doc.vercel.app/share";
 const X_ICON_PATH =
   "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z";
 const LINKEDIN_ICON_PATH =
@@ -20,7 +20,8 @@ interface ShareSearchParams {
   f?: string;
 }
 
-const clampScore = (value: number): number => Math.max(0, Math.min(PERFECT_SCORE, value));
+const clampScore = (value: number): number =>
+  Math.max(0, Math.min(PERFECT_SCORE, value));
 
 const getScoreLabel = (score: number): string => {
   if (score >= SCORE_GOOD_THRESHOLD) return "Great";
@@ -64,15 +65,20 @@ export const generateMetadata = async ({
   const label = getScoreLabel(score);
 
   const titlePrefix = projectName ? `${projectName} - ` : "";
-  const title = `React Doctor - ${titlePrefix}Score: ${score}/100 (${label})`;
+  const title = `React Native Doctor - ${titlePrefix}Score: ${score}/100 (${label})`;
   const descriptionParts: string[] = [];
-  if (errorCount > 0) descriptionParts.push(`${errorCount} error${errorCount === 1 ? "" : "s"}`);
+  if (errorCount > 0)
+    descriptionParts.push(`${errorCount} error${errorCount === 1 ? "" : "s"}`);
   if (warningCount > 0)
-    descriptionParts.push(`${warningCount} warning${warningCount === 1 ? "" : "s"}`);
+    descriptionParts.push(
+      `${warningCount} warning${warningCount === 1 ? "" : "s"}`,
+    );
   const description =
     descriptionParts.length > 0
-      ? `${descriptionParts.join(", ")} found. Run react-doctor on your codebase to find React issues.`
-      : "Run react-doctor on your codebase to find React issues.";
+      ? `${descriptionParts.join(
+          ", ",
+        )} found. Run react-native-doc on your codebase to find React Native issues.`
+      : "Run react-native-doc on your codebase to find React Native issues.";
 
   const ogSearchParams = new URLSearchParams();
   if (resolvedParams.p) ogSearchParams.set("p", resolvedParams.p);
@@ -86,11 +92,20 @@ export const generateMetadata = async ({
     title,
     description,
     openGraph: { title, description, images: [ogImageUrl] },
-    twitter: { card: "summary_large_image", title, description, images: [ogImageUrl] },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImageUrl],
+    },
   };
 };
 
-const SharePage = async ({ searchParams }: { searchParams: Promise<ShareSearchParams> }) => {
+const SharePage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<ShareSearchParams>;
+}) => {
   const resolvedParams = await searchParams;
   const projectName = resolvedParams.p ?? null;
   const score = clampScore(Number(resolvedParams.s) || 0);
@@ -107,18 +122,29 @@ const SharePage = async ({ searchParams }: { searchParams: Promise<ShareSearchPa
   if (resolvedParams.f) shareSearchParams.set("f", resolvedParams.f);
   const shareUrl = `${SHARE_BASE_URL}?${shareSearchParams.toString()}`;
 
-  const projectLabel = projectName ? `${projectName} ` : "My React codebase ";
-  const tweetText = `${projectLabel}scored ${score}/100 (${label}) on React Doctor. Run it on yours:`;
-  const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(shareUrl)}`;
-  const linkedinShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+  const projectLabel = projectName
+    ? `${projectName} `
+    : "My React Native codebase ";
+  const tweetText = `${projectLabel}scored ${score}/100 (${label}) on React Native Doctor. Run it on yours:`;
+  const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    tweetText,
+  )}&url=${encodeURIComponent(shareUrl)}`;
+  const linkedinShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+    shareUrl,
+  )}`;
 
   return (
     <div className="mx-auto min-h-screen w-full max-w-3xl bg-[#0a0a0a] p-6 pb-32 font-mono text-base leading-relaxed text-neutral-300 sm:p-8 sm:pb-40 sm:text-lg">
       <div className="mb-6">
-        {projectName && <div className="mb-4 text-xl text-white">{projectName}</div>}
+        {projectName && (
+          <div className="mb-4 text-xl text-white">{projectName}</div>
+        )}
         <DoctorFace score={score} />
         <div className="mt-2 text-neutral-500">
-          React Doctor <span className="text-neutral-600">(www.react.doctor)</span>
+          React Native Doctor{" "}
+          <span className="text-neutral-600">
+            (react-native-doc.vercel.app)
+          </span>
         </div>
       </div>
 
@@ -147,12 +173,16 @@ const SharePage = async ({ searchParams }: { searchParams: Promise<ShareSearchPa
 
       <div className="text-neutral-500">Run it on your codebase:</div>
       <div className="mt-2">
-        <span className="border border-white/20 px-3 py-1.5 text-white">{COMMAND}</span>
+        <span className="border border-white/20 px-3 py-1.5 text-white">
+          {COMMAND}
+        </span>
       </div>
 
       <div className="mt-6 text-neutral-500">Auto-fix with Ami:</div>
       <div className="mt-2">
-        <span className="border border-white/20 px-3 py-1.5 text-white">{FIX_COMMAND}</span>
+        <span className="border border-white/20 px-3 py-1.5 text-white">
+          {FIX_COMMAND}
+        </span>
       </div>
 
       <div className="mt-8 flex flex-wrap items-center gap-3">

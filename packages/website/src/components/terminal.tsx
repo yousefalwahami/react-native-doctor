@@ -25,9 +25,10 @@ const TOTAL_ERROR_COUNT = 22;
 const AFFECTED_FILE_COUNT = 18;
 const ELAPSED_TIME = "2.1s";
 
-const ANIMATION_COMPLETED_KEY = "react-doctor-animation-completed";
-const COMMAND = "npx -y react-doctor@latest .";
-const GITHUB_URL = "https://github.com/millionco/react-doctor";
+const ANIMATION_COMPLETED_KEY = "react-native-doc-animation-completed";
+const COMMAND = "npx -y react-native-doc@latest .";
+const GITHUB_URL = "https://github.com/yousefalwahami/react-native-doctor";
+const FORK_CREDIT_URL = "https://github.com/millionco/react-doctor";
 const GITHUB_ICON_PATH =
   "M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z";
 
@@ -44,62 +45,65 @@ interface Diagnostic {
 
 const DIAGNOSTICS: Diagnostic[] = [
   {
-    message: "Derived state computed in useEffect, compute during render instead",
-    count: 5,
-    files: [
-      { path: "src/components/Dashboard.tsx", lines: [42, 87] },
-      { path: "src/hooks/useFilters.ts", lines: [15, 23, 31] },
-    ],
-  },
-  {
-    message: 'Server action "deleteUser" missing authentication check',
-    count: 2,
-    files: [
-      { path: "src/app/actions/users.ts", lines: [18] },
-      { path: "src/app/actions/admin.ts", lines: [45] },
-    ],
-  },
-  {
-    message: "Array index used as key, causes bugs when items are reordered",
-    count: 12,
-    files: [
-      { path: "src/components/TodoList.tsx", lines: [24, 51] },
-      { path: "src/components/CommentThread.tsx", lines: [33, 67, 89] },
-      { path: "src/components/SearchResults.tsx", lines: [19, 42, 55, 78, 91, 103, 112] },
-    ],
-  },
-  {
-    message: 'Component "UserCard" inside "Dashboard", destroys state every render',
-    count: 4,
-    files: [
-      { path: "src/components/Dashboard.tsx", lines: [56, 112] },
-      { path: "src/components/Settings.tsx", lines: [34, 78] },
-    ],
-  },
-  {
-    message: "Data fetched in useEffect without cleanup, causes race conditions",
-    count: 8,
-    files: [
-      { path: "src/components/Profile.tsx", lines: [22] },
-      { path: "src/components/Feed.tsx", lines: [45, 89] },
-      { path: "src/hooks/useUser.ts", lines: [12, 34] },
-      { path: "src/hooks/usePosts.ts", lines: [8, 19, 27] },
-    ],
-  },
-  {
-    message: "useState initialized from prop, derive during render instead of syncing",
+    message: "Raw text outside <Text> — crashes React Native",
     count: 3,
     files: [
-      { path: "src/components/EditForm.tsx", lines: [15, 16] },
-      { path: "src/components/Modal.tsx", lines: [28] },
+      { path: "src/screens/HomeScreen.tsx", lines: [34] },
+      { path: "src/components/ProfileCard.tsx", lines: [58, 71] },
     ],
   },
   {
-    message: "Missing prefers-reduced-motion check for animations",
+    message:
+      "Touchable missing accessibilityLabel — required for screen readers",
+    count: 6,
+    files: [
+      { path: "src/components/Button.tsx", lines: [12] },
+      { path: "src/screens/SettingsScreen.tsx", lines: [45, 89, 103] },
+      { path: "src/components/NavBar.tsx", lines: [27, 61] },
+    ],
+  },
+  {
+    message: "FlatList missing keyExtractor — causes unnecessary re-renders",
+    count: 4,
+    files: [
+      { path: "src/screens/FeedScreen.tsx", lines: [22] },
+      { path: "src/components/CommentList.tsx", lines: [18, 37] },
+      { path: "src/screens/SearchScreen.tsx", lines: [56] },
+    ],
+  },
+  {
+    message:
+      "ScrollView + .map() renders all items — use FlatList for virtualization",
     count: 2,
     files: [
-      { path: "src/components/Hero.tsx", lines: [41] },
-      { path: "src/components/Carousel.tsx", lines: [63] },
+      { path: "src/screens/NotificationsScreen.tsx", lines: [31] },
+      { path: "src/components/ProductGrid.tsx", lines: [44] },
+    ],
+  },
+  {
+    message: "Inline renderItem creates new function reference every render",
+    count: 3,
+    files: [
+      { path: "src/screens/FeedScreen.tsx", lines: [19] },
+      { path: "src/screens/InboxScreen.tsx", lines: [28, 52] },
+    ],
+  },
+  {
+    message:
+      "Dimensions.get() doesn't update on rotation — use useWindowDimensions()",
+    count: 5,
+    files: [
+      { path: "src/components/Card.tsx", lines: [8] },
+      { path: "src/screens/MapScreen.tsx", lines: [14, 33] },
+      { path: "src/utils/layout.ts", lines: [3, 9] },
+    ],
+  },
+  {
+    message: "Small tap target without hitSlop — minimum touch target is 44pt",
+    count: 2,
+    files: [
+      { path: "src/components/CloseButton.tsx", lines: [17] },
+      { path: "src/components/Badge.tsx", lines: [29] },
     ],
   },
 ];
@@ -225,7 +229,9 @@ const DiagnosticItem = ({ diagnostic }: { diagnostic: Diagnostic }) => {
         >
           <ChevronRight
             size={16}
-            className={`mt-[0.35em] shrink-0 text-neutral-500 transition-transform duration-150 ${isOpen ? "rotate-90" : ""}`}
+            className={`mt-[0.35em] shrink-0 text-neutral-500 transition-transform duration-150 ${
+              isOpen ? "rotate-90" : ""
+            }`}
           />
           <span>
             <span className="text-red-400">✗</span>
@@ -344,7 +350,11 @@ const Terminal = () => {
 
       for (let frame = 0; frame <= SCORE_FRAME_COUNT; frame++) {
         if (cancelled) return;
-        update({ score: Math.round(easeOutCubic(frame / SCORE_FRAME_COUNT) * TARGET_SCORE) });
+        update({
+          score: Math.round(
+            easeOutCubic(frame / SCORE_FRAME_COUNT) * TARGET_SCORE,
+          ),
+        });
         await sleep(SCORE_FRAME_DELAY_MS);
       }
 
@@ -372,31 +382,39 @@ const Terminal = () => {
         <FadeIn>
           <Spacer />
           <div className="flex items-center gap-2">
-            <img src="/favicon.svg" alt="React Doctor" width={24} height={24} />
-            react-doctor
+            <img
+              src="/favicon.svg"
+              alt="React Native Doctor"
+              width={24}
+              height={24}
+            />
+            react-native-doc
           </div>
           <div className="text-neutral-500">
-            Let coding agents diagnose and fix your React code.
+            Diagnose React Native &amp; Expo codebase health.
           </div>
           <Spacer />
         </FadeIn>
       )}
 
       <div className="sm:hidden">
-        {DIAGNOSTICS.slice(0, Math.min(state.visibleDiagnosticCount, DIAGNOSTIC_COUNT_MOBILE)).map(
+        {DIAGNOSTICS.slice(
+          0,
+          Math.min(state.visibleDiagnosticCount, DIAGNOSTIC_COUNT_MOBILE),
+        ).map((diagnostic) => (
+          <FadeIn key={diagnostic.message}>
+            <DiagnosticItem diagnostic={diagnostic} />
+          </FadeIn>
+        ))}
+      </div>
+      <div className="hidden sm:block">
+        {DIAGNOSTICS.slice(0, state.visibleDiagnosticCount).map(
           (diagnostic) => (
             <FadeIn key={diagnostic.message}>
               <DiagnosticItem diagnostic={diagnostic} />
             </FadeIn>
           ),
         )}
-      </div>
-      <div className="hidden sm:block">
-        {DIAGNOSTICS.slice(0, state.visibleDiagnosticCount).map((diagnostic) => (
-          <FadeIn key={diagnostic.message}>
-            <DiagnosticItem diagnostic={diagnostic} />
-          </FadeIn>
-        ))}
       </div>
 
       {state.showSeparator && <Spacer />}
@@ -419,7 +437,9 @@ const Terminal = () => {
             </span>
           </div>
           <Spacer />
-          <div className="text-neutral-500">Run it on your codebase to find issues like these:</div>
+          <div className="text-neutral-500">
+            Run it on your codebase to find issues like these:
+          </div>
           <Spacer />
           <div className="flex flex-wrap items-center gap-3">
             <CopyCommand />
@@ -429,10 +449,30 @@ const Terminal = () => {
               rel="noreferrer"
               className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap border border-white/20 bg-white px-3 py-1.5 text-black transition-all hover:bg-white/90 active:scale-[0.98]"
             >
-              <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                <path fillRule="evenodd" clipRule="evenodd" d={GITHUB_ICON_PATH} />
+              <svg
+                width="18"
+                height="18"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d={GITHUB_ICON_PATH}
+                />
               </svg>
               Star on GitHub
+            </a>
+          </div>
+          <div className="mt-3 text-xs text-neutral-600">
+            forked from{" "}
+            <a
+              href={FORK_CREDIT_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="transition-colors hover:text-neutral-400 hover:underline"
+            >
+              react-doctor
             </a>
           </div>
         </FadeIn>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="244" height="82" viewBox="0 0 244 82">
+  <rect width="244" height="82" fill="#00242c"/>
+  <text
+    x="122"
+    y="47"
+    font-family="monospace, Courier New, Courier"
+    font-size="18"
+    fill="#ffffff"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    letter-spacing="-0.5"
+  >react-native-doc</text>
+</svg>
