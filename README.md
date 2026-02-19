@@ -1,1 +1,1 @@
-packages/react-doctor/README.md
+packages/react-native-doctor/README.md

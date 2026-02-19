@@ -1,5 +1,5 @@
-name: "React Doctor"
-description: "Scan React codebases for security, performance, and correctness issues"
+name: "React Native Doctor"
+description: "Scan React Native & Expo codebases for performance, accessibility, and architecture issues"
 branding:
   icon: "activity"
   color: "blue"
@@ -14,6 +14,12 @@ inputs:
   project:
     description: "Workspace project(s) to scan (comma-separated)"
     required: false
+  rn-only:
+    description: "Force-enable React Native rules even if react-native is not auto-detected"
+    default: "false"
+  expo-only:
+    description: "Force-enable Expo rules even if expo is not auto-detected"
+    default: "false"
   node-version:
     description: "Node.js version to use"
     default: "20"
@@ -35,16 +41,20 @@ runs:
         INPUT_DIRECTORY: ${{ inputs.directory }}
         INPUT_VERBOSE: ${{ inputs.verbose }}
         INPUT_PROJECT: ${{ inputs.project }}
+        INPUT_RN_ONLY: ${{ inputs.rn-only }}
+        INPUT_EXPO_ONLY: ${{ inputs.expo-only }}
       run: |
         FLAGS=""
         if [ "$INPUT_VERBOSE" = "true" ]; then FLAGS="$FLAGS --verbose"; fi
         if [ -n "$INPUT_PROJECT" ]; then FLAGS="$FLAGS --project $INPUT_PROJECT"; fi
-        npx -y react-doctor@latest "$INPUT_DIRECTORY" $FLAGS
+        if [ "$INPUT_RN_ONLY" = "true" ]; then FLAGS="$FLAGS --rn-only"; fi
+        if [ "$INPUT_EXPO_ONLY" = "true" ]; then FLAGS="$FLAGS --expo-only"; fi
+        npx -y react-native-doctor@latest "$INPUT_DIRECTORY" $FLAGS
 
     - id: score
       shell: bash
       env:
         INPUT_DIRECTORY: ${{ inputs.directory }}
       run: |
-        SCORE=$(npx -y react-doctor@latest "$INPUT_DIRECTORY" --score 2>/dev/null || echo "")
+        SCORE=$(npx -y react-native-doctor@latest "$INPUT_DIRECTORY" --score 2>/dev/null || echo "")
         echo "score=$SCORE" >> "$GITHUB_OUTPUT"

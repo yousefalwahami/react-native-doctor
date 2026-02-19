@@ -32,7 +32,7 @@ export default defineConfig([
   },
   {
     entry: {
-      "react-doctor-plugin": "./src/plugin/index.ts",
+      "react-native-doctor-plugin": "./src/plugin/index.ts",
     },
     target: "node18",
     platform: "node",

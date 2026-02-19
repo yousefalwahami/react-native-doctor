@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/yousefalwahami/react-native-doctor.git",
-    "directory": "packages/react-doctor"
+    "directory": "packages/react-native-doctor"
   },
   "bin": {
     "react-native-doctor": "./dist/cli.js"
@@ -37,8 +37,8 @@
       "default": "./dist/index.js"
     },
     "./oxlint-plugin": {
-      "types": "./dist/react-doctor-plugin.d.ts",
-      "default": "./dist/react-doctor-plugin.js"
+      "types": "./dist/react-native-doctor-plugin.d.ts",
+      "default": "./dist/react-native-doctor-plugin.js"
     }
   },
   "scripts": {

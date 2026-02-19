@@ -6,11 +6,12 @@ import type { Diagnostic } from "../types.js";
 import { readPackageJson } from "./read-package-json.js";
 
 const REDUCED_MOTION_GREP_PATTERN = "prefers-reduced-motion|useReducedMotion";
-const REDUCED_MOTION_FILE_GLOBS = '"*.ts" "*.tsx" "*.js" "*.jsx" "*.css" "*.scss"';
+const REDUCED_MOTION_FILE_GLOBS =
+  '"*.ts" "*.tsx" "*.js" "*.jsx" "*.css" "*.scss"';
 
 const MISSING_REDUCED_MOTION_DIAGNOSTIC: Diagnostic = {
   filePath: "package.json",
-  plugin: "react-doctor",
+  plugin: "react-native-doctor",
   rule: "require-reduced-motion",
   severity: "error",
   message:
@@ -29,7 +30,10 @@ export const checkReducedMotion = (rootDirectory: string): Diagnostic[] => {
   let hasMotionLibrary = false;
   try {
     const packageJson = readPackageJson(packageJsonPath);
-    const allDependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
+    const allDependencies = {
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies,
+    };
     hasMotionLibrary = Object.keys(allDependencies).some((packageName) =>
       MOTION_LIBRARY_PACKAGES.has(packageName),
     );
@@ -39,10 +43,13 @@ export const checkReducedMotion = (rootDirectory: string): Diagnostic[] => {
   if (!hasMotionLibrary) return [];
 
   try {
-    execSync(`git grep -ql -E "${REDUCED_MOTION_GREP_PATTERN}" -- ${REDUCED_MOTION_FILE_GLOBS}`, {
-      cwd: rootDirectory,
-      stdio: "pipe",
-    });
+    execSync(
+      `git grep -ql -E "${REDUCED_MOTION_GREP_PATTERN}" -- ${REDUCED_MOTION_FILE_GLOBS}`,
+      {
+        cwd: rootDirectory,
+        stdio: "pipe",
+      },
+    );
     return [];
   } catch {
     return [MISSING_REDUCED_MOTION_DIAGNOSTIC];

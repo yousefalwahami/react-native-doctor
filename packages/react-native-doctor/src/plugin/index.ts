@@ -120,7 +120,7 @@ import {
 import type { RulePlugin } from "./types.js";
 
 const plugin: RulePlugin = {
-  meta: { name: "react-doctor" },
+  meta: { name: "react-native-doctor" },
   rules: {
     "no-derived-state-effect": noDerivedStateEffect,
     "no-fetch-in-effect": noFetchInEffect,
@@ -214,9 +214,11 @@ const plugin: RulePlugin = {
     "rn-heavy-computation-in-render": rnHeavyComputationInRender,
     "rn-avoid-anonymous-functions-in-jsx": rnAvoidAnonymousFunctionsInJsx,
 
-    "rn-touchable-missing-accessibility-label": rnTouchableMissingAccessibilityLabel,
+    "rn-touchable-missing-accessibility-label":
+      rnTouchableMissingAccessibilityLabel,
     "rn-missing-accessibility-role": rnMissingAccessibilityRole,
-    "rn-non-descriptive-accessibility-label": rnNonDescriptiveAccessibilityLabel,
+    "rn-non-descriptive-accessibility-label":
+      rnNonDescriptiveAccessibilityLabel,
     "rn-image-missing-accessible": rnImageMissingAccessible,
     "rn-touchable-hitslop-missing": rnTouchableHitslopMissing,
 
@@ -232,7 +234,8 @@ const plugin: RulePlugin = {
 
     "expo-missing-dark-mode-support": expoMissingDarkModeSupport,
     "expo-constants-misuse": expoConstantsMisuse,
-    "expo-router-layout-missing-error-boundary": expoRouterLayoutMissingErrorBoundary,
+    "expo-router-layout-missing-error-boundary":
+      expoRouterLayoutMissingErrorBoundary,
     "expo-hardcoded-api-keys": expoHardcodedApiKeys,
     "expo-router-missing-not-found": expoRouterMissingNotFound,
   },

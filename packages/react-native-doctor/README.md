@@ -199,7 +199,7 @@ pnpm -r run build
 Run locally:
 
 ```bash
-node packages/react-doctor/dist/cli.js /path/to/your/react-native-project
+node packages/react-native-doctor/dist/cli.js /path/to/your/react-native-project
 ```
 
 ### License

@@ -154,7 +154,7 @@ const formatRuleSummary = (
 };
 
 const writeDiagnosticsDirectory = (diagnostics: Diagnostic[]): string => {
-  const outputDirectory = join(tmpdir(), `react-doctor-${randomUUID()}`);
+  const outputDirectory = join(tmpdir(), `react-native-doctor-${randomUUID()}`);
   mkdirSync(outputDirectory);
 
   const ruleGroups = groupBy(
@@ -237,7 +237,9 @@ const printFramedBox = (framedLines: FramedLine[]): void => {
       maximumLineLength - framedLine.plainText.length,
     );
     logger.log(
-      `${outerIndent}${borderColorizer("│")}${horizontalPadding}${framedLine.renderedText}${trailingSpaces}${horizontalPadding}${borderColorizer("│")}`,
+      `${outerIndent}${borderColorizer("│")}${horizontalPadding}${
+        framedLine.renderedText
+      }${trailingSpaces}${horizontalPadding}${borderColorizer("│")}`,
     );
   }
 
@@ -269,7 +271,9 @@ const printBranding = (score?: number): void => {
     logger.log(colorize("  └─────┘"));
   }
   logger.log(
-    `  React Native Doctor ${highlighter.dim("(github.com/yousefalwahami/react-native-doctor)")}`,
+    `  React Native Doctor ${highlighter.dim(
+      "(github.com/yousefalwahami/react-native-doctor)",
+    )}`,
   );
   logger.break();
 };
@@ -321,7 +325,9 @@ const printSummary = (
     summaryLineParts.push(highlighter.error(errorText));
   }
   if (warningCount > 0) {
-    const warningText = `⚠ ${warningCount} warning${warningCount === 1 ? "" : "s"}`;
+    const warningText = `⚠ ${warningCount} warning${
+      warningCount === 1 ? "" : "s"
+    }`;
     summaryLinePartsPlain.push(warningText);
     summaryLineParts.push(highlighter.warn(warningText));
   }
@@ -357,13 +363,21 @@ const printSummary = (
     summaryFramedLines.push(
       createFramedLine(
         "React Native Doctor (github.com/yousefalwahami/react-native-doctor)",
-        `React Native Doctor ${highlighter.dim("(github.com/yousefalwahami/react-native-doctor)")}`,
+        `React Native Doctor ${highlighter.dim(
+          "(github.com/yousefalwahami/react-native-doctor)",
+        )}`,
       ),
     );
     summaryFramedLines.push(createFramedLine(""));
 
     const scoreLinePlainText = `${scoreResult.score} / ${PERFECT_SCORE}  ${scoreResult.label}`;
-    const scoreLineRenderedText = `${colorizeByScore(String(scoreResult.score), scoreResult.score)} / ${PERFECT_SCORE}  ${colorizeByScore(scoreResult.label, scoreResult.score)}`;
+    const scoreLineRenderedText = `${colorizeByScore(
+      String(scoreResult.score),
+      scoreResult.score,
+    )} / ${PERFECT_SCORE}  ${colorizeByScore(
+      scoreResult.label,
+      scoreResult.score,
+    )}`;
     summaryFramedLines.push(
       createFramedLine(scoreLinePlainText, scoreLineRenderedText),
     );
@@ -379,7 +393,9 @@ const printSummary = (
     summaryFramedLines.push(
       createFramedLine(
         "React Native Doctor (github.com/yousefalwahami/react-native-doctor)",
-        `React Native Doctor ${highlighter.dim("(github.com/yousefalwahami/react-native-doctor)")}`,
+        `React Native Doctor ${highlighter.dim(
+          "(github.com/yousefalwahami/react-native-doctor)",
+        )}`,
       ),
     );
     summaryFramedLines.push(createFramedLine(""));
@@ -450,13 +466,19 @@ export const scan = async (
       `Detecting framework. Found ${highlighter.info(frameworkLabel)}.`,
     );
     completeStep(
-      `Detecting React version. Found ${highlighter.info(`React ${projectInfo.reactVersion ?? "Native"}`)}. `,
+      `Detecting React version. Found ${highlighter.info(
+        `React ${projectInfo.reactVersion ?? "Native"}`,
+      )}. `,
     );
     completeStep(
       `Detecting language. Found ${highlighter.info(languageLabel)}.`,
     );
     completeStep(
-      `Detecting React Compiler. ${projectInfo.hasReactCompiler ? highlighter.info("Found React Compiler.") : "Not found."}`,
+      `Detecting React Compiler. ${
+        projectInfo.hasReactCompiler
+          ? highlighter.info("Found React Compiler.")
+          : "Not found."
+      }`,
     );
 
     if (rnContext.isReactNative) {
@@ -464,7 +486,9 @@ export const scan = async (
         ? ` ${rnContext.rnVersion}`
         : "";
       completeStep(
-        `Detecting React Native. Found ${highlighter.info(`React Native${rnVersionLabel}`)}.`,
+        `Detecting React Native. Found ${highlighter.info(
+          `React Native${rnVersionLabel}`,
+        )}.`,
       );
     }
     if (rnContext.isExpo) {
@@ -483,11 +507,15 @@ export const scan = async (
 
     if (isDiffMode) {
       completeStep(
-        `Scanning ${highlighter.info(`${includePaths.length}`)} changed source files.`,
+        `Scanning ${highlighter.info(
+          `${includePaths.length}`,
+        )} changed source files.`,
       );
     } else {
       completeStep(
-        `Found ${highlighter.info(`${projectInfo.sourceFileCount}`)} source files.`,
+        `Found ${highlighter.info(
+          `${projectInfo.sourceFileCount}`,
+        )} source files.`,
       );
     }
 
